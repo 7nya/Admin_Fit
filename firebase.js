@@ -1,13 +1,13 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+
 import {getAuth} from 'firebase/auth';
+import { getFirestore, doc, setDoc, getDoc} from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCe24MAg7yOkvfPEZK9Gfg9dlZSi2XTbyw",
   authDomain: "adminfit.firebaseapp.com",
+  databaseURL: "https://adminfit-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "adminfit",
   storageBucket: "adminfit.appspot.com",
   messagingSenderId: "923441335220",
@@ -17,6 +17,36 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
+export const auth = getAuth(app);
+export const firestore = getFirestore(app);
 
-export {auth}
+
+
+
+export const createUserDocument = async (user, additionalData) => {
+  if (!user) return
+
+  // Получение ссылки на документ пользователя
+  const userRef = doc(firestore, `users/${user.uid}`);
+
+  // Проверка наличия документа пользователя в Firestore
+  const snapshot = await getDoc(userRef);
+
+  if(snapshot.exists) {
+    const {email} = user;
+    const {name} = additionalData;
+    try{
+      // Создание документа пользователя
+      await setDoc(
+        userRef,
+        {
+          email,
+          name,
+        }
+      )
+      console.log('succes')
+    } catch(err) {
+      console.log('got error: ', err.message)
+    }
+  }
+}

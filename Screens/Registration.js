@@ -9,23 +9,31 @@ import {
   Button,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Alert
 } from "react-native";
 import Muscle from '../assets/muscle1.png';
-import { auth } from '../firebase';
+import { auth, createUserDocument } from '../firebase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
+import 'firebase/database';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 
 
-export default Login = () => {
+
+export default Registration = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+
   const navigation = useNavigation();
 
   const handleSignUp = async() => {
-    if (email && password) {
+    if (email && password && name) {
       try {
-        await createUserWithEmailAndPassword(auth, email, password)
+        const {user} = await createUserWithEmailAndPassword(auth, email, password)
+        await createUserDocument(user, {name})
       } catch(err) {
         console.log('got error: ', err.message)
       }
@@ -36,6 +44,16 @@ export default Login = () => {
     <KeyboardAvoidingView style={styles.container}>
       <Image style={styles.image} source={Muscle} />
       <StatusBar style="auto" />
+
+      <View style={styles.inputView}>
+        <TextInput
+          style={styles.TextInput}
+          placeholder="Username"
+          placeholderTextColor="#003f5c"
+          value={name}
+          onChangeText={value => setName(value)}
+        />
+      </View>
 
       <View style={styles.inputView}>
         <TextInput

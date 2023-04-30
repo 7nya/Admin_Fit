@@ -1,20 +1,10 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { View, Text } from 'react-native'
 import React from 'react'
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebase';
 
-const Person = () => {
-  const handleLogout = async ()=> {
-    await signOut(auth);
-  }
-
+export default function Person() {
   return (
     <View>
-      <TouchableOpacity onPress={handleLogout}>
-        <Text>Logout</Text>
-      </TouchableOpacity>
+      <Text>Person</Text>
     </View>
   )
 }
-
-export default Person

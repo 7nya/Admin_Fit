@@ -9,6 +9,7 @@ import {
   Button,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Alert
 } from "react-native";
 import Muscle from '../assets/muscle1.png';
 import { auth } from '../firebase';
@@ -20,21 +21,30 @@ import { useNavigation } from "@react-navigation/core";
 export default Login = () => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
+
   const navigation = useNavigation();
 
   const handleSignIn = async() => {
-    if (email!=null && password!=null){
+    if (email && password){
       if (email && password) {
         try {
           await signInWithEmailAndPassword(auth, email, password)
         } catch(err) {
           console.log('got error: ', err.message)
-          alert("Wrong email/password")
+          Alert.alert(
+            "Invalid email/password",
+            "Please enter the correct email and password.",
+            [ { text: "OK" } ]
+          )
         }
       }
-    }else{
-      alert("Enter data")
-    }
+    } else {
+        Alert.alert(
+          "Error",
+          "Please enter all data.",
+          [ { text: "OK" } ]
+        )
+    } 
   }
 
   const resetPassword=()=>{
@@ -44,7 +54,6 @@ export default Login = () => {
           alert("Password reset email has sent successfully");
         })
         .catch((error) => {
-          const errorCode = error.code;
           const errorMessage = error.message;
           alert(errorMessage);
         });
