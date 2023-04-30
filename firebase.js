@@ -23,17 +23,17 @@ export const firestore = getFirestore(app);
 
 
 
-export const createUserDocument = async (user, additionalData) => {
-  if (!user) return
+export const createUserDocument = async (instructor, additionalData) => {
+  if (!instructor) return
 
   // Получение ссылки на документ пользователя
-  const userRef = doc(firestore, `users/${user.uid}`);
+  const userRef = doc(firestore, `instructors/${instructor.uid}`);
 
   // Проверка наличия документа пользователя в Firestore
   const snapshot = await getDoc(userRef);
 
   if(snapshot.exists) {
-    const {email} = user;
+    const {email} = instructor;
     const {name} = additionalData;
     try{
       // Создание документа пользователя
