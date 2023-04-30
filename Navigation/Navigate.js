@@ -9,6 +9,7 @@ import Login from '../Screens/Login';
 import Person from '../Screens/Person';
 import useAuth from "../AuthHook/useAuth";
 import Registration from "../Screens/Registration";
+import ForgotPassword from "../Screens/ForgotPassword";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,6 +37,11 @@ const Navigate = () => {
                     options={{headerShown: false}} 
                     name = "Registration" 
                     component={Registration} 
+                    />
+                <Stack.Screen 
+                    options={{headerShown: true}} 
+                    name = "ForgotPassword" 
+                    component={ForgotPassword} 
                     />
             </Stack.Navigator>
             

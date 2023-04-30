@@ -19,9 +19,6 @@ import 'firebase/database';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 
-
-
-
 export default Registration = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

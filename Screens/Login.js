@@ -47,20 +47,6 @@ export default Login = () => {
     } 
   }
 
-  const resetPassword=()=>{
-    if (email != null) {
-      sendPasswordResetEmail(auth, email)
-        .then(() => {
-          alert("Password reset email has sent successfully");
-        })
-        .catch((error) => {
-          const errorMessage = error.message;
-          alert(errorMessage);
-        });
-    } else {
-      alert("Enter a valid email");
-    }
-  }
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -94,7 +80,7 @@ export default Login = () => {
 
       <View style={{ flexDirection: 'row' }}>
 
-        <TouchableOpacity onPress={()=>resetPassword()}>
+        <TouchableOpacity onPress={()=>navigation.navigate('ForgotPassword')}>
           <Text style={styles.forgot_button}>Forgot Password</Text>
         </TouchableOpacity>
 
