@@ -12,44 +12,23 @@ import {
 } from "react-native";
 import Muscle from '../assets/muscle1.png';
 import { auth } from '../firebase';
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
 
 
 
 export default Login = () => {
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
-  const handleSignIn = async() => {
-    if (email!=null && password!=null){
-      if (email && password) {
-        try {
-          await signInWithEmailAndPassword(auth, email, password)
-        } catch(err) {
-          console.log('got error: ', err.message)
-          alert("Wrong email/password")
-        }
+  const handleSignUp = async() => {
+    if (email && password) {
+      try {
+        await createUserWithEmailAndPassword(auth, email, password)
+      } catch(err) {
+        console.log('got error: ', err.message)
       }
-    }else{
-      alert("Enter data")
-    }
-  }
-
-  const resetPassword=()=>{
-    if (email != null) {
-      sendPasswordResetEmail(auth, email)
-        .then(() => {
-          alert("Password reset email has sent successfully");
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          alert(errorMessage);
-        });
-    } else {
-      alert("Enter a valid email");
     }
   }
 
@@ -79,20 +58,14 @@ export default Login = () => {
         />
       </View>
 
-      <TouchableOpacity onPress={handleSignIn} style={styles.loginBtn}>
-        <Text style={styles.loginText}>Sign In</Text>
+      <TouchableOpacity onPress = {handleSignUp} style={styles.loginBtn}>
+        <Text style={styles.loginText}>Register</Text>
       </TouchableOpacity>
 
       <View style={{ flexDirection: 'row' }}>
 
-        <TouchableOpacity onPress={()=>resetPassword()}>
-          <Text style={styles.forgot_button}>Forgot Password</Text>
-        </TouchableOpacity>
-
-        <Text>     |     </Text>
-
-        <TouchableOpacity onPress={()=> navigation.navigate('Registration')}>
-          <Text style={styles.forgot_button}>Create Account</Text>
+        <TouchableOpacity onPress={()=> navigation.navigate('Login')}>
+          <Text style={styles.forgot_button}>Sign in</Text>
         </TouchableOpacity>
 
       </View>
@@ -142,6 +115,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#32b3be"
+    backgroundColor: "#32b3be",
   },
 });

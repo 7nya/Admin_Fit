@@ -3,18 +3,15 @@ import React from 'react'
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 
-const Person = () => {
-  const handleLogout = async ()=> {
-    await signOut(auth);
-  }
+const Settings = () => {
 
   return (
     <View>
-      <TouchableOpacity onPress={handleLogout}>
-        <Text>Logout</Text>
+      <TouchableOpacity>
+        <Text>Settings</Text>
       </TouchableOpacity>
     </View>
   )
 }
 
-export default Person
+export default Settings
