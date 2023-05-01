@@ -6,7 +6,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import TabNavigate from './TabNavigate';
 import Login from '../Screens/Login';
-import Person from '../Screens/Person';
 import useAuth from "../AuthHook/useAuth";
 import Registration from "../Screens/Registration";
 import ForgotPassword from "../Screens/ForgotPassword";
@@ -20,6 +19,7 @@ const Navigate = () => {
         return <NavigationContainer>
             <Stack.Navigator>
                 <Stack.Screen 
+                    options={{headerShown: false}}
                     name="Tab" 
                     component={TabNavigate}
                     />

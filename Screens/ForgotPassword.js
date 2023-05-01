@@ -15,10 +15,8 @@ import {
 import Muscle from "../assets/muscle1.png";
 import { auth } from "../firebase";
 import {
-  signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from "firebase/auth";
-import { useNavigation } from "@react-navigation/core";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState(null);
@@ -31,6 +29,7 @@ export default function ForgotPassword() {
         })
         .catch((error) => {
           const errorMessage = error.message;
+          console.log(errorMessage);
           Alert.alert(
             "Email not found",
             "Please enter the correct email.",

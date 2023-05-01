@@ -16,18 +16,14 @@ const TabNavigate = () => {
             tabBarInactiveBackgroundColor: '#b1fff1'
             }}>
                 <Tab.Screen
-                name = "Person"
-                component={Person}
-                options={{
-                    tabBarLabel: 'Person',
-                }}
+                    name = "Person"
+                    component={Person}
+                    options={{ tabBarLabel: 'Person', }}
                 />
                 <Tab.Screen
-                name = "Settings"
-                component={Settings}
-                options={{
-                    tabBarLabel: 'Settings',
-                }}
+                    name = "Settings"
+                    component={Settings}
+                    options={{ tabBarLabel: 'Settings', }}
                 />
         </Tab.Navigator>
     )

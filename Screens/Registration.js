@@ -16,7 +16,6 @@ import { auth, createUserDocument } from '../firebase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
 import 'firebase/database';
-import firebase from 'firebase/app';
 import 'firebase/auth';
 
 export default Registration = () => {
