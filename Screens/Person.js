@@ -1,50 +1,82 @@
-import { View, Text, FlatList, Pressable, StyleSheet } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { firebase } from '../firebase'
+import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { firebase } from "../firebase";
+import { useNavigation } from "@react-navigation/core";
 
-const UsersScreen = () => {
+const Person = () => {
   const [users, setUsers] = useState([]);
   const db = firebase.firestore();
+  const navigation = useNavigation();
+  const [pressedIndex, setPressedIndex] = useState(null);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const usersCollection = await db.collection('users').get();
-      const usersData = usersCollection.docs.map((doc) => ({
+    const unsubscribe = db.collection("users").onSnapshot((snapshot) => {
+      const usersData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setUsers(usersData);
-    };
-    fetchUsers();
+    });
+
+    return () => unsubscribe();
   }, []);
 
+  const renderItem = ({ item, index }) => {
+
+    const handlePressIn = () => {
+      setPressedIndex(index);
+    };
+
+    const handlePressOut = () => {
+      setPressedIndex(null);
+    };
+
+    return (
+      <Pressable
+        style={({ pressed }) => [
+          styles.item,
+          { backgroundColor: pressed || pressedIndex === index ? '#32b3be' : '#b1fff1' },
+        ]}
+        onPress={() => navigation.navigate('PersonStack', { user: item })}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      >
+        <Text style={styles.title}>{item.username}</Text>
+        <Text style={styles.subtitle}>{item.email}</Text>
+      </Pressable>
+    );
+
+  };
+
   return (
-    <View>
-      {users.map((user) => (
-        <Text key={user.id}>{user.username + ' - '}{user.email}</Text>
-      ))}
+    <View style={styles.container}>
+      <FlatList
+        data={users}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
 };
 
-export default UsersScreen;
-
 const styles = StyleSheet.create({
-  container:{
-    backgroundColor: '#e5e5e5',
-    padding: 15,
-    borderRadius:15,
-    margin:5,
-    marginHorizontal:10,  
+  container: {
+    flex: 1,
+    paddingTop: 22,
   },
-  innerContainer:{
-    alignItems:'center',
-    flexDirection: 'column',
+  item: {
+    backgroundColor: "#b1fff1",
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    borderRadius: 25,
   },
-  itemHeading:{
-    fontWeight:'bold'
+  title: {
+    fontSize: 32,
   },
-  itemText:{
-    fontWeight:'300'
-  }
-})
+  subtitle: {
+    fontSize: 16,
+  },
+});
+
+export default Person;

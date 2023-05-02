@@ -9,14 +9,13 @@ import {
   Button,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Alert
+  Alert,
 } from "react-native";
-import Muscle from '../assets/muscle1.png';
-import { auth } from '../firebase';
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import Muscle from "../assets/muscle1.png";
+import { auth } from "../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
-
-
+import { firebase } from "../firebase";
 
 export default Login = () => {
   const [email, setEmail] = useState(null);
@@ -24,29 +23,37 @@ export default Login = () => {
 
   const navigation = useNavigation();
 
-  const handleSignIn = async() => {
-    if (email && password){
-      if (email && password) {
-        try {
-          await signInWithEmailAndPassword(auth, email, password)
-        } catch(err) {
-          console.log('got error: ', err.message)
-          Alert.alert(
-            "Invalid email/password",
-            "Please enter the correct email and password.",
-            [ { text: "OK" } ]
-          )
-        }
-      }
-    } else {
-        Alert.alert(
-          "Error",
-          "Please enter all data.",
-          [ { text: "OK" } ]
-        )
-    } 
-  }
-
+  const handleSignIn = async () => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Успешный вход в систему, проверяем, является ли пользователь администратором
+        const user = userCredential.user;
+        const userRef = firebase.firestore().collection("users").doc(user.uid);
+        userRef
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              // Пользователь найден в базе данных Firebase
+              const userData = doc.data();
+              if (userData.isAdmin == false) {
+                alert("Access denied. User is not an administrator.");
+                firebase.auth().signOut();
+                // Пользователь является администратором, перенаправляем на страницу для администраторов
+              }
+            }
+          })
+          .catch((error) => {
+            // Обрабатываем ошибку
+            alert(error);
+          });
+      })
+      .catch((error) => {
+        // Обрабатываем ошибку
+        alert(error);
+      });
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -59,7 +66,7 @@ export default Login = () => {
           placeholder="Email@Example.com"
           placeholderTextColor="#003f5c"
           value={email}
-          onChangeText={value => setEmail(value)}
+          onChangeText={(value) => setEmail(value)}
         />
       </View>
 
@@ -70,7 +77,7 @@ export default Login = () => {
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
           value={password}
-          onChangeText={value => setPassword(value)}
+          onChangeText={(value) => setPassword(value)}
         />
       </View>
 
@@ -78,23 +85,20 @@ export default Login = () => {
         <Text style={styles.loginText}>Sign In</Text>
       </TouchableOpacity>
 
-      <View style={{ flexDirection: 'row' }}>
-
-        <TouchableOpacity onPress={()=>navigation.navigate('ForgotPassword')}>
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
           <Text style={styles.forgot_button}>Forgot Password</Text>
         </TouchableOpacity>
 
-        <Text>     |     </Text>
+        <Text>   |   </Text>
 
-        <TouchableOpacity onPress={()=> navigation.navigate('Registration')}>
+        <TouchableOpacity onPress={() => navigation.navigate("Registration")}>
           <Text style={styles.forgot_button}>Create Account</Text>
         </TouchableOpacity>
-
       </View>
-
     </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -107,7 +111,7 @@ const styles = StyleSheet.create({
   image: {
     marginBottom: 40,
     width: 140,
-    height: 140
+    height: 140,
   },
 
   inputView: {
@@ -115,7 +119,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     width: "70%",
     height: 45,
-    marginBottom: 20
+    marginBottom: 20,
   },
 
   TextInput: {
@@ -137,6 +141,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#32b3be"
+    backgroundColor: "#32b3be",
   },
 });

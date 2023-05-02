@@ -9,14 +9,15 @@ import {
   Button,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Alert
+  Alert,
 } from "react-native";
-import Muscle from '../assets/muscle1.png';
-import { auth, createUserDocument } from '../firebase';
+import Muscle from "../assets/muscle1.png";
+import { auth, createUserDocument } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
-import 'firebase/database';
-import 'firebase/auth';
+import "firebase/database";
+import "firebase/auth";
+import { firebase } from "../firebase";
 
 export default Registration = () => {
   const [email, setEmail] = useState("");
@@ -25,16 +26,29 @@ export default Registration = () => {
 
   const navigation = useNavigation();
 
-  const handleSignUp = async() => {
-    if (email && password && name) {
-      try {
-        const {user} = await createUserWithEmailAndPassword(auth, email, password)
-        await createUserDocument(user, {name})
-      } catch(err) {
-        console.log('got error: ', err.message)
-      }
-    }
-  }
+  const handleSignUp = async () => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // User создан, сохраняем информацию в базе данных Firebase
+        const user = userCredential.user;
+        const isAdmin = true; // Устанавливаем флаг администратора для нового пользователя
+        return firebase
+          .firestore()
+          .collection("instructors")
+          .doc(user.uid)
+          .set({
+            email: user.email,
+            name,
+            isAdmin: isAdmin,
+          });
+      })
+      .catch((error) => {
+        // Обрабатываем ошибку
+        console.error(error);
+      });
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -47,7 +61,7 @@ export default Registration = () => {
           placeholder="Username"
           placeholderTextColor="#003f5c"
           value={name}
-          onChangeText={value => setName(value)}
+          onChangeText={(value) => setName(value)}
         />
       </View>
 
@@ -57,7 +71,7 @@ export default Registration = () => {
           placeholder="Email@Example.com"
           placeholderTextColor="#003f5c"
           value={email}
-          onChangeText={value => setEmail(value)}
+          onChangeText={(value) => setEmail(value)}
         />
       </View>
 
@@ -68,25 +82,22 @@ export default Registration = () => {
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
           value={password}
-          onChangeText={value => setPassword(value)}
+          onChangeText={(value) => setPassword(value)}
         />
       </View>
 
-      <TouchableOpacity onPress = {handleSignUp} style={styles.loginBtn}>
+      <TouchableOpacity onPress={handleSignUp} style={styles.loginBtn}>
         <Text style={styles.loginText}>Register</Text>
       </TouchableOpacity>
 
-      <View style={{ flexDirection: 'row' }}>
-
-        <TouchableOpacity onPress={()=> navigation.navigate('Login')}>
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <Text style={styles.forgot_button}>Sign in</Text>
         </TouchableOpacity>
-
       </View>
-
     </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -99,7 +110,7 @@ const styles = StyleSheet.create({
   image: {
     marginBottom: 40,
     width: 140,
-    height: 140
+    height: 140,
   },
 
   inputView: {
@@ -107,7 +118,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     width: "70%",
     height: 45,
-    marginBottom: 20
+    marginBottom: 20,
   },
 
   TextInput: {

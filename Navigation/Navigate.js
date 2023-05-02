@@ -9,6 +9,8 @@ import Login from '../Screens/Login';
 import useAuth from "../AuthHook/useAuth";
 import Registration from "../Screens/Registration";
 import ForgotPassword from "../Screens/ForgotPassword";
+import PersonStack from "../Screens/PersonStack";
+import { UserDetailsScreen } from "../Screens/Person";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -22,6 +24,11 @@ const Navigate = () => {
                     options={{headerShown: false}}
                     name="Tab" 
                     component={TabNavigate}
+                    />
+                <Stack.Screen
+                    options={{headerShown: true}} 
+                    name = "PersonStack" 
+                    component={PersonStack} 
                     />
             </Stack.Navigator>
         </NavigationContainer>
