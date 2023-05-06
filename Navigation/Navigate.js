@@ -11,6 +11,7 @@ import Registration from "../Screens/Registration";
 import ForgotPassword from "../Screens/ForgotPassword";
 import PersonStack from "../Screens/PersonStack";
 import { UserDetailsScreen } from "../Screens/Person";
+import RegistrationNext from "../Screens/RegistrationNext";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -46,9 +47,19 @@ const Navigate = () => {
                     component={Registration} 
                     />
                 <Stack.Screen 
-                    options={{headerShown: true}} 
+                    options={{
+                        headerShown: true,
+                        title: 'Сброс пароля',
+                        headerStyle: { backgroundColor: '#32b3be' },
+                        headerTitleStyle: { fontSize: 25 }
+                    }} 
                     name = "ForgotPassword" 
                     component={ForgotPassword} 
+                    />
+                <Stack.Screen 
+                    options={{headerShown: false}} 
+                    name = "RegistrationNext" 
+                    component={RegistrationNext} 
                     />
             </Stack.Navigator>
             

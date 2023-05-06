@@ -11,8 +11,8 @@ const PersonStack = ({ route }) => {
       <Text style={styles.title}>{user.username}</Text>
       <Text style={styles.subtitle}>{user.email}</Text>
       <Text style={styles.subtitle}>{user.gender}</Text>
-      <Text style={styles.subtitle}>{user.height}</Text>
-      <Text style={styles.subtitle}>{user.weight}</Text>
+      <Text style={styles.subtitle}>height - {user.height}</Text>
+      <Text style={styles.subtitle}>weight - {user.weight}</Text>
       <Text style={styles.subtitle}>{user.activity}</Text>
       <Text style={styles.subtitle}>{user.goal}</Text>
     </View>

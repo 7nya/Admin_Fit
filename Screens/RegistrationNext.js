@@ -6,114 +6,76 @@ import {
   View,
   Image,
   TextInput,
-  Button,
   TouchableOpacity,
   KeyboardAvoidingView,
   Alert,
-  ActivityIndicator,
-  Switch,
 } from "react-native";
 import Muscle from "../assets/muscle1.png";
-import { auth } from "../firebase";
+import { auth, createUserDocument } from "../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
+import "firebase/database";
+import "firebase/auth";
 import { firebase } from "../firebase";
-import { signOut } from "firebase/auth";
-import useAuth from "../AuthHook/useAuth";
 import { useRoute } from "@react-navigation/native";
 import { CheckBox } from "@rneui/themed";
 import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
-import { getDoc, doc, updateDoc } from "firebase/firestore";
-import { firestore } from "../firebase";
 
-const options = [
-  { label: "Мужчина", value: "Male" },
-  { label: "Женщина", value: "Female" },
-];
-
-const Settings = () => {
-
-  const [age, setAge] = useState("");
-  const [gender, setGender] = useState("");
+export default Registration = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
   const [description, setDescription] = useState("");
-  const [username, setUsername] = useState("");
+  const route = useRoute();
+  const { email, username, isCoach, password, confirmPassword } = route.params;
 
-  const { user } = useAuth();
+  const navigation = useNavigation();
 
-  useEffect(() => {
-    if (user) {
-      setAge(user.age);
-      setGender(user.gender);
-      setFirstName(user.firstName);
-      setLastName(user.lastName);
-      setDescription(user.description);
-    }
-  }, [user]);
+  const options = [
+    { label: "Male", value: "Male" },
+    { label: "Female", value: "Female" },
+  ];
 
-  const checkInfo = () => {
-    const regex = /^\d+$/;
-
-    if (age && gender && firstName && lastName) {
-      if (regex.test(age)) {
-        return true;
-      } else {
-        alert("Недопустимые значения");
-        return false;
-      }
+  const handleSignUp = async () => {
+    if (firstName && lastName && age && gender) {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // User создан, сохраняем информацию в базе данных Firebase
+          const user = userCredential.user;
+          const isCoach = true; // Устанавливаем флаг администратора для нового пользователя
+          return firebase
+            .firestore()
+            .collection("instructors")
+            .doc(user.uid)
+            .set({
+              age: Number(age),
+              description: description,
+              username: username,
+              firstName: firstName,
+              lastName: lastName,
+              gender: gender,
+              email: email,
+              isCoach: isCoach,
+            });
+        })
+        .catch((error) => {
+          // Обрабатываем ошибку
+          console.error(error);
+        });
     } else {
       alert("Заполните все обязательные поля!");
     }
   };
 
-  const handleSubmit = async () => {
-    if (checkInfo()) {
-      try {
-        const userRef = doc(firestore, `instructors/${user.uid}`);
-        const userDoc = await getDoc(userRef);
-        if (userDoc.exists()) {
-          await updateDoc(userRef, {
-            age: age,
-            gender: gender,
-            firstName: firstName,
-            lastName: lastName,
-            description: description,
-          });
-        }
-      } catch (err) {
-        console.log("got error: ", err.message);
-      }
-    } 
-  };
-
-  if (!user) {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  const handleLogout = async () => {
-    await signOut(auth);
-  };
-
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container}>
         <Image style={styles.image} source={Muscle} />
         <StatusBar style="auto" />
-
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Имя пользователя"
-            placeholderTextColor="#003f5c"
-            value={username}
-            onChangeText={(value) => setUsername(value)}
-          />
-        </View>
 
         <View style={styles.inputView}>
           <TextInput
@@ -146,7 +108,6 @@ const Settings = () => {
             onChangeText={(value) => setAge(value)}
           />
         </View>
-
         <View style={styles.inputViewDescription}>
           <TextInput
             style={[styles.TextInput, { height: "auto" }]}
@@ -184,14 +145,16 @@ const Settings = () => {
           ))}
         </View>
 
-        <TouchableOpacity onPress={handleSubmit} style={styles.loginBtn}>
-          <Text style={styles.loginText}>Обновить</Text>
+        <TouchableOpacity onPress={handleSignUp} style={styles.loginBtn}>
+          <Text style={styles.loginText}>Регистрация</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleLogout} style={styles.loginBtn}>
-          <Text style={styles.loginText}>Выйти</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity onPress={() => navigation.navigate("Registration")}>
+            <Text style={styles.forgot_button}> Назад </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 };
@@ -208,18 +171,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
 
-  inputPassword: {
-    backgroundColor: "#fff",
-    borderRadius: 5,
-    width: "80%",
-    height: 45,
-    marginBottom: 5,
-    borderColor: "#32b3be",
-    borderWidth: 1,
-  },
-
   image: {
-    marginTop: 20,
+    marginTop: 60,
+    marginBottom: 40,
     width: 140,
     height: 140,
   },
@@ -229,12 +183,34 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: "80%",
     height: 45,
-    marginBottom: 5,
+    marginBottom: 10,
+    borderColor: "#32b3be",
+    borderWidth: 1,
+  },
+
+  inputViewDescription: {
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    width: "80%",
+    height: "auto",
+    marginBottom: 0,
+    borderColor: "#32b3be",
+    borderWidth: 1,
+    flex: 1,
+  },
+
+  inputPassword: {
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    width: "80%",
+    height: 45,
+    marginBottom: 10,
     borderColor: "#32b3be",
     borderWidth: 1,
   },
 
   TextInput: {
+    height: 50,
     flex: 1,
     padding: 10,
     marginLeft: 20,
@@ -249,7 +225,7 @@ const styles = StyleSheet.create({
     width: "50%",
     borderRadius: 25,
     height: 50,
-    marginBottom: 10,
+    marginBottom: 20,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#32b3be",
@@ -260,17 +236,4 @@ const styles = StyleSheet.create({
   checkbox_container: {
     flexDirection: "row",
   },
-
-  inputViewDescription: {
-    backgroundColor: "#fff",
-    borderRadius: 5,
-    width: "80%",
-    height: "auto",
-    marginBottom: 0,
-    borderColor: "#32b3be",
-    borderWidth: 1,
-    flex: 1,
-  },
 });
-
-export default Settings;

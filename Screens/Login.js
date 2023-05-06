@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Alert,
+  ActivityIndicator,
+  Switch
 } from "react-native";
 import Muscle from "../assets/muscle1.png";
 import { auth } from "../firebase";
@@ -17,13 +19,20 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
 import { firebase } from "../firebase";
 
+
 export default Login = () => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const handleToggleSwitch = () => setShowPassword(!showPassword);
+
 
   const navigation = useNavigation();
 
   const handleSignIn = async () => {
+    setIsLoading(true);
+
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
@@ -37,7 +46,7 @@ export default Login = () => {
             if (doc.exists) {
               // Пользователь найден в базе данных Firebase
               const userData = doc.data();
-              if (userData.isAdmin == false) {
+              if (userData.isCoach == false) {
                 alert("Access denied. User is not an administrator.");
                 firebase.auth().signOut();
                 // Пользователь является администратором, перенаправляем на страницу для администраторов
@@ -52,6 +61,9 @@ export default Login = () => {
       .catch((error) => {
         // Обрабатываем ошибку
         alert(error);
+      }) //;
+      .finally(() =>{
+        setIsLoading(false);
       });
   };
 
@@ -70,32 +82,37 @@ export default Login = () => {
         />
       </View>
 
-      <View style={styles.inputView}>
+      <View style={[styles.inputView, {flexDirection: "row"}]}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Password"
+          placeholder="Пароль"
           placeholderTextColor="#003f5c"
-          secureTextEntry={true}
+          secureTextEntry={!showPassword}
           value={password}
           onChangeText={(value) => setPassword(value)}
         />
+        <Switch value={showPassword} onValueChange={handleToggleSwitch} />
       </View>
 
+
       <TouchableOpacity onPress={handleSignIn} style={styles.loginBtn}>
-        <Text style={styles.loginText}>Sign In</Text>
+        <Text style={styles.loginText}>Войти</Text>
       </TouchableOpacity>
 
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-          <Text style={styles.forgot_button}>Forgot Password</Text>
+          <Text style={styles.forgot_button}>Забыли пароль?</Text>
         </TouchableOpacity>
 
         <Text>   |   </Text>
 
         <TouchableOpacity onPress={() => navigation.navigate("Registration")}>
-          <Text style={styles.forgot_button}>Create Account</Text>
+          <Text style={styles.forgot_button}>Создать аккаунт</Text>
         </TouchableOpacity>
       </View>
+
+      {isLoading && <ActivityIndicator />}
+
     </KeyboardAvoidingView>
   );
 };
@@ -103,7 +120,7 @@ export default Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#b1fff1",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -115,15 +132,16 @@ const styles = StyleSheet.create({
   },
 
   inputView: {
-    backgroundColor: "#b1fff1",
-    borderRadius: 30,
-    width: "70%",
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    width: "80%",
     height: 45,
     marginBottom: 20,
+    borderColor:"#32b3be",
+    borderWidth: 1,
   },
 
   TextInput: {
-    height: 50,
     flex: 1,
     padding: 10,
     marginLeft: 20,
@@ -135,12 +153,14 @@ const styles = StyleSheet.create({
   },
 
   loginBtn: {
-    width: "80%",
+    width: "50%",
     borderRadius: 25,
     height: 50,
     marginBottom: 20,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#32b3be",
+    borderColor:"#b1fff1",
+    borderWidth: 1,
   },
 });

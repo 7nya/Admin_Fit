@@ -6,48 +6,43 @@ import {
   View,
   Image,
   TextInput,
-  Button,
   TouchableOpacity,
   KeyboardAvoidingView,
   Alert,
+  Switch,
 } from "react-native";
 import Muscle from "../assets/muscle1.png";
-import { auth, createUserDocument } from "../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
 import "firebase/database";
 import "firebase/auth";
-import { firebase } from "../firebase";
 
-export default Registration = () => {
+export default Registration = ({ route }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const isCoach = true;
+  const [showPassword, setShowPassword] = useState(false);
+  const handleToggleSwitch = () => setShowPassword(!showPassword);
 
   const navigation = useNavigation();
 
-  const handleSignUp = async () => {
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // User создан, сохраняем информацию в базе данных Firebase
-        const user = userCredential.user;
-        const isAdmin = true; // Устанавливаем флаг администратора для нового пользователя
-        return firebase
-          .firestore()
-          .collection("instructors")
-          .doc(user.uid)
-          .set({
-            email: user.email,
-            name,
-            isAdmin: isAdmin,
-          });
-      })
-      .catch((error) => {
-        // Обрабатываем ошибку
-        console.error(error);
-      });
+  const handleSignUp = () => {
+    if (username && email && password && confirmPassword) {
+      if (password == confirmPassword) {
+        navigation.navigate("RegistrationNext", {
+          email,
+          username,
+          isCoach,
+          password,
+          confirmPassword,
+        });
+      } else {
+        alert("Пароли не совпадают");
+      }
+    } else {
+      alert("Заполните все поля");
+    }
   };
 
   return (
@@ -58,10 +53,10 @@ export default Registration = () => {
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Username"
+          placeholder="Имя пользователя"
           placeholderTextColor="#003f5c"
-          value={name}
-          onChangeText={(value) => setName(value)}
+          value={username}
+          onChangeText={(value) => setUsername(value)}
         />
       </View>
 
@@ -75,24 +70,35 @@ export default Registration = () => {
         />
       </View>
 
+      <View style={[styles.inputPassword, { flexDirection: "row" }]}>
+        <TextInput
+          style={styles.TextInput}
+          placeholder="Пароль"
+          placeholderTextColor="#003f5c"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={(value) => setPassword(value)}
+        />
+        <Switch value={showPassword} onValueChange={handleToggleSwitch} />
+      </View>
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Password"
+          placeholder="Подтвердите пароль"
           placeholderTextColor="#003f5c"
-          secureTextEntry={true}
-          value={password}
-          onChangeText={(value) => setPassword(value)}
+          secureTextEntry={!showPassword}
+          value={confirmPassword}
+          onChangeText={(value) => setConfirmPassword(value)}
         />
       </View>
 
       <TouchableOpacity onPress={handleSignUp} style={styles.loginBtn}>
-        <Text style={styles.loginText}>Register</Text>
+        <Text style={styles.loginText}>Далее</Text>
       </TouchableOpacity>
 
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text style={styles.forgot_button}>Sign in</Text>
+          <Text style={styles.forgot_button}>Войти</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -102,7 +108,7 @@ export default Registration = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#b1fff1",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -114,11 +120,23 @@ const styles = StyleSheet.create({
   },
 
   inputView: {
-    backgroundColor: "#b1fff1",
-    borderRadius: 30,
-    width: "70%",
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    width: "80%",
     height: 45,
     marginBottom: 20,
+    borderColor: "#32b3be",
+    borderWidth: 1,
+  },
+
+  inputPassword: {
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    width: "80%",
+    height: 45,
+    marginBottom: 5,
+    borderColor: "#32b3be",
+    borderWidth: 1,
   },
 
   TextInput: {
@@ -134,12 +152,18 @@ const styles = StyleSheet.create({
   },
 
   loginBtn: {
-    width: "80%",
+    width: "50%",
     borderRadius: 25,
     height: 50,
     marginBottom: 20,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#32b3be",
+    borderColor: "#b1fff1",
+    borderWidth: 1,
+  },
+
+  checkbox_container: {
+    flexDirection: "row",
   },
 });
