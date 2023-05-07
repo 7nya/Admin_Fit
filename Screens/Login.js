@@ -11,7 +11,7 @@ import {
   KeyboardAvoidingView,
   Alert,
   ActivityIndicator,
-  Switch
+  Switch,
 } from "react-native";
 import Muscle from "../assets/muscle1.png";
 import { auth } from "../firebase";
@@ -19,14 +19,12 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
 import { firebase } from "../firebase";
 
-
 export default Login = () => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const handleToggleSwitch = () => setShowPassword(!showPassword);
-
 
   const navigation = useNavigation();
 
@@ -62,7 +60,7 @@ export default Login = () => {
         // Обрабатываем ошибку
         alert(error);
       }) //;
-      .finally(() =>{
+      .finally(() => {
         setIsLoading(false);
       });
   };
@@ -82,7 +80,7 @@ export default Login = () => {
         />
       </View>
 
-      <View style={[styles.inputView, {flexDirection: "row"}]}>
+      <View style={[styles.inputView, { flexDirection: "row" }]}>
         <TextInput
           style={styles.TextInput}
           placeholder="Пароль"
@@ -94,7 +92,6 @@ export default Login = () => {
         <Switch value={showPassword} onValueChange={handleToggleSwitch} />
       </View>
 
-
       <TouchableOpacity onPress={handleSignIn} style={styles.loginBtn}>
         <Text style={styles.loginText}>Войти</Text>
       </TouchableOpacity>
@@ -104,7 +101,7 @@ export default Login = () => {
           <Text style={styles.forgot_button}>Забыли пароль?</Text>
         </TouchableOpacity>
 
-        <Text>   |   </Text>
+        <Text> | </Text>
 
         <TouchableOpacity onPress={() => navigation.navigate("Registration")}>
           <Text style={styles.forgot_button}>Создать аккаунт</Text>
@@ -112,7 +109,6 @@ export default Login = () => {
       </View>
 
       {isLoading && <ActivityIndicator />}
-
     </KeyboardAvoidingView>
   );
 };
@@ -137,7 +133,7 @@ const styles = StyleSheet.create({
     width: "80%",
     height: 45,
     marginBottom: 20,
-    borderColor:"#32b3be",
+    borderColor: "#32b3be",
     borderWidth: 1,
   },
 
@@ -160,7 +156,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#32b3be",
-    borderColor:"#b1fff1",
+    borderColor: "#b1fff1",
     borderWidth: 1,
   },
 });

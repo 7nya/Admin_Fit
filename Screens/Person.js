@@ -22,7 +22,6 @@ const Person = () => {
   }, []);
 
   const renderItem = ({ item, index }) => {
-
     const handlePressIn = () => {
       setPressedIndex(index);
     };
@@ -35,9 +34,12 @@ const Person = () => {
       <Pressable
         style={({ pressed }) => [
           styles.item,
-          { backgroundColor: pressed || pressedIndex === index ? '#32b3be' : '#b1fff1' },
+          {
+            backgroundColor:
+              pressed || pressedIndex === index ? "#32b3be" : "#b1fff1",
+          },
         ]}
-        onPress={() => navigation.navigate('PersonStack', { user: item })}
+        onPress={() => navigation.navigate("PersonStack", { user: item })}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
@@ -45,7 +47,6 @@ const Person = () => {
         <Text style={styles.subtitle}>{item.email}</Text>
       </Pressable>
     );
-
   };
 
   return (

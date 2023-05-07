@@ -25,6 +25,7 @@ import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
+import { Avatar } from "@rneui/themed";
 
 const options = [
   { label: "Мужчина", value: "Male" },
@@ -32,7 +33,7 @@ const options = [
 ];
 
 const Settings = () => {
-
+  const navigation = useNavigation();
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -49,13 +50,14 @@ const Settings = () => {
       setFirstName(user.firstName);
       setLastName(user.lastName);
       setDescription(user.description);
+      setUsername(user.username);
     }
   }, [user]);
 
   const checkInfo = () => {
     const regex = /^\d+$/;
 
-    if (age && gender && firstName && lastName) {
+    if (age && gender && firstName && lastName && username) {
       if (regex.test(age)) {
         return true;
       } else {
@@ -79,12 +81,13 @@ const Settings = () => {
             firstName: firstName,
             lastName: lastName,
             description: description,
+            username: username,
           });
         }
       } catch (err) {
         console.log("got error: ", err.message);
       }
-    } 
+    }
   };
 
   if (!user) {
@@ -104,7 +107,9 @@ const Settings = () => {
       <View style={styles.container}>
         <Image style={styles.image} source={Muscle} />
         <StatusBar style="auto" />
-
+        <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
+          Имя пользователя
+        </Text>
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
@@ -115,6 +120,9 @@ const Settings = () => {
           />
         </View>
 
+        <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
+          Фамилия
+        </Text>
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
@@ -126,6 +134,9 @@ const Settings = () => {
           />
         </View>
 
+        <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
+          Имя
+        </Text>
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
@@ -136,6 +147,9 @@ const Settings = () => {
           />
         </View>
 
+        <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
+          Возраст
+        </Text>
         <View style={styles.inputPassword}>
           <TextInput
             style={styles.TextInput}
@@ -147,6 +161,9 @@ const Settings = () => {
           />
         </View>
 
+        <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
+          Описание
+        </Text>
         <View style={styles.inputViewDescription}>
           <TextInput
             style={[styles.TextInput, { height: "auto" }]}
@@ -185,12 +202,22 @@ const Settings = () => {
         </View>
 
         <TouchableOpacity onPress={handleSubmit} style={styles.loginBtn}>
-          <Text style={styles.loginText}>Обновить</Text>
+          <Text style={styles.loginText}>Обновить данные</Text>
         </TouchableOpacity>
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ForgotPassword")}
+            style={styles.forgot_button}
+          >
+            <Text style={styles.loginText}>Изменить пароль</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleLogout} style={styles.loginBtn}>
-          <Text style={styles.loginText}>Выйти</Text>
-        </TouchableOpacity>
+          <Text> | </Text>
+
+          <TouchableOpacity onPress={handleLogout} style={styles.forgot_button}>
+            <Text style={styles.loginText}>Выйти из аккаунта</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
