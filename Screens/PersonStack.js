@@ -16,8 +16,10 @@ import heightIcon from "../assets/height.png";
 import weightIcon from "../assets/weight.png";
 
 const PersonStack = ({ route }) => {
+  const { userId } = route.params
   const { user } = route.params;
   const db = firebase.firestore();
+  const navigation = useNavigation();
 
   let ageText = "";
 
@@ -32,7 +34,7 @@ const PersonStack = ({ route }) => {
   } else {
     ageText = "лет";
   }
-
+/*
   useEffect(() => {
     const unsubscribe = db.collection("users").onSnapshot((snapshot) => {
       const usersData = snapshot.docs.map((doc) => ({
@@ -45,7 +47,7 @@ const PersonStack = ({ route }) => {
     return () => unsubscribe();
   }, []);
 
-  const usersCollectionRef = db.collection("users");
+   const usersCollectionRef = db.collection("users");
 
   const userDocRef = usersCollectionRef.doc(user.id);
 
@@ -69,7 +71,7 @@ const PersonStack = ({ route }) => {
     })
     .catch((error) => {
       console.log("Error getting documents: ", error);
-    });
+    }); */
 
   return (
     <View style={styles.container}>
@@ -101,6 +103,12 @@ const PersonStack = ({ route }) => {
         <Text style={styles.subtitle}>
           Возраст: {user.age} {ageText}
         </Text>
+        <TouchableOpacity  onPress={() => navigation.navigate("Calorie", { user, userId })}  style={styles.loginBtn}>
+          <Text style={styles.subtitle}>
+            История калорий
+          </Text>
+        </TouchableOpacity>
+
       </View>
     </View>
   );
@@ -138,6 +146,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginVertical: 2,
     marginLeft: 10,
+  },
+  loginBtn: {
+    width: "50%",
+    borderRadius: 25,
+    height: 50,
+    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#32b3be",
+    borderColor: "#b1fff1",
+    borderWidth: 1,
   },
 });
 

@@ -47,6 +47,12 @@ export default Settings = ({}) => {
   ////////////
   const { user } = useAuth();
 
+  const Change = async () => {
+    await deleteImage();
+    await pickImage();
+  };
+
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -149,7 +155,6 @@ export default Settings = ({}) => {
             lastName: lastName,
             description: description,
             username: username,
-            avatar: image, //
           });
         }
       } catch (err) {
@@ -185,9 +190,15 @@ export default Settings = ({}) => {
         ) : (
           <>
             {image && <Image style={styles.image} source={{ uri: image }} />}
-            <TouchableOpacity onPress={deleteImage}>
-              <Text>Удалить аватар</Text>
-            </TouchableOpacity>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity onPress={Change}>
+                <Text>Изменить аватар</Text>
+              </TouchableOpacity>
+              <Text>  |  </Text>
+              <TouchableOpacity onPress={deleteImage}>
+                <Text>Удалить аватар</Text>
+              </TouchableOpacity>
+            </View>
           </>
         )}
 

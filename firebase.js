@@ -8,6 +8,7 @@ import 'firebase/compat/firestore';
 import { getStorage } from "firebase/storage";
 import 'firebase/storage';
 
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCe24MAg7yOkvfPEZK9Gfg9dlZSi2XTbyw",
@@ -24,6 +25,8 @@ export const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
+
+export const db = firestore;
 
 export const storage = getStorage(app);
 

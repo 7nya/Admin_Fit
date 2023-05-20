@@ -12,6 +12,7 @@ import ForgotPassword from "../Screens/ForgotPassword";
 import PersonStack from "../Screens/PersonStack";
 import { UserDetailsScreen } from "../Screens/Person";
 import RegistrationNext from "../Screens/RegistrationNext";
+import Calorie from "../Screens/Calorie";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -46,6 +47,16 @@ const Navigate = () => {
             }}
             name="ForgotPassword"
             component={ForgotPassword}
+          />
+          <Stack.Screen
+            options={{
+              headerShown: true,
+              title: "Учёт калорий",
+              headerStyle: { backgroundColor: "#32b3be" },
+              headerTitleStyle: { fontSize: 25 },
+            }}
+            name="Calorie"
+            component={Calorie}
           />
         </Stack.Navigator>
       </NavigationContainer>

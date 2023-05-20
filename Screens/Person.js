@@ -29,7 +29,6 @@ const Person = () => {
     const handlePressOut = () => {
       setPressedIndex(null);
     };
-
     return (
       <Pressable
         style={({ pressed }) => [
@@ -39,7 +38,7 @@ const Person = () => {
               pressed || pressedIndex === index ? "#32b3be" : "#b1fff1",
           },
         ]}
-        onPress={() => navigation.navigate("PersonStack", { user: item })}
+        onPress={ () => navigation.navigate("PersonStack", {  user:item, userId: item.id   }) }
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
