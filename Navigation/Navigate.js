@@ -28,7 +28,12 @@ const Navigate = () => {
             component={TabNavigate}
           />
           <Stack.Screen
-            options={{ headerShown: true }}
+            options={{
+               headerShown: true,
+               title: "Информация",
+               headerStyle: { backgroundColor: "#32b3be", },
+               headerTitleStyle: { fontSize: 25 }, 
+              }}
             name="PersonStack"
             component={PersonStack}
           />

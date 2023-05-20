@@ -43,7 +43,7 @@ const Person = () => {
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
-        <Text style={styles.title}>{item.username}</Text>
+        <Text style={styles.title}>{[item.firstname," ",item.lastname]}</Text>
         <Text style={styles.subtitle}>{item.email}</Text>
       </Pressable>
     );
@@ -63,7 +63,7 @@ const Person = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 22,
+    paddingTop: 0,
   },
   item: {
     backgroundColor: "#b1fff1",
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
   },
   subtitle: {
     fontSize: 16,

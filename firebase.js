@@ -6,7 +6,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { getStorage } from "firebase/storage";
-
+import 'firebase/storage';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -26,6 +26,8 @@ export const auth = getAuth(app);
 export const firestore = getFirestore(app);
 
 export const storage = getStorage(app);
+
+//export const storageAvatar = firebase.storage();
 
 export const createUserDocument = async (instructor, additionalData) => {
   if (!instructor) return
@@ -49,7 +51,8 @@ export const createUserDocument = async (instructor, additionalData) => {
           gender,
           age,
           isCoach,
-          description
+          description,
+          avatar
         }
       )
       console.log('succes')

@@ -6,33 +6,35 @@ import {
   View,
   Image,
   TextInput,
-  Button,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Alert,
-  ActivityIndicator,
-  Switch,
 } from "react-native";
 import Muscle from "../assets/muscle1.png";
-import { auth } from "../firebase";
+import { auth, storage } from "../firebase";
 import { useNavigation } from "@react-navigation/core";
-import { firebase } from "../firebase";
 import { signOut } from "firebase/auth";
 import useAuth from "../AuthHook/useAuth";
-import { useRoute } from "@react-navigation/native";
 import { CheckBox } from "@rneui/themed";
 import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
-import { Avatar } from "@rneui/themed";
+
+///////////
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import * as ImagePicker from "expo-image-picker";
+////////////
 
 const options = [
   { label: "Мужчина", value: "Male" },
   { label: "Женщина", value: "Female" },
 ];
 
-const Settings = () => {
+export default Settings = ({}) => {
   const navigation = useNavigation();
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
@@ -40,8 +42,72 @@ const Settings = () => {
   const [lastName, setLastName] = useState("");
   const [description, setDescription] = useState("");
   const [username, setUsername] = useState("");
-
+  //////////////
+  const [image, setImage] = useState(null);
+  ////////////
   const { user } = useAuth();
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const selectedAsset = result.assets[0];
+      const uploadURL = await uploadImageAsync(selectedAsset.uri);
+      if (uploadURL) {
+        setImage(uploadURL);
+        try {
+          const userRef = doc(firestore, `instructors/${user.uid}`);
+          await updateDoc(userRef, {
+            avatar: uploadURL,
+          });
+        } catch (err) {
+          console.log("got error: ", err.message);
+        }
+      }
+    } else {
+      setImage(null);
+    }
+  };
+
+  const uploadImageAsync = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    try {
+      const storageRef = ref(storage, `avatars/image-${Date.now()}`);
+      await uploadBytes(storageRef, blob);
+      const downloadURL = await getDownloadURL(storageRef);
+      return downloadURL;
+    } catch (error) {
+      console.log(`Error: ${error}`);
+      alert(`Error: ${error}`);
+      return null;
+    }
+  };
+
+  const deleteImage = async () => {
+    const deleteRef = ref(storage, image);
+    try {
+      await deleteObject(deleteRef);
+      setImage(null);
+      try {
+        const userRef = doc(firestore, `instructors/${user.uid}`);
+        await updateDoc(userRef, {
+          avatar: null,
+        });
+      } catch (err) {
+        console.log("got error: ", err.message);
+      }
+    } catch (error) {
+      console.log(`Error: ${error}`);
+      alert(`Error: ${error}`);
+    }
+  };
 
   useEffect(() => {
     if (user) {
@@ -51,6 +117,7 @@ const Settings = () => {
       setLastName(user.lastName);
       setDescription(user.description);
       setUsername(user.username);
+      setImage(user.avatar);
     }
   }, [user]);
 
@@ -82,6 +149,7 @@ const Settings = () => {
             lastName: lastName,
             description: description,
             username: username,
+            avatar: image, //
           });
         }
       } catch (err) {
@@ -105,8 +173,24 @@ const Settings = () => {
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.container}>
-        <Image style={styles.image} source={Muscle} />
         <StatusBar style="auto" />
+
+        {!image ? (
+          <>
+            <Image style={styles.image} source={Muscle} />
+            <TouchableOpacity onPress={pickImage}>
+              <Text>Выбрать аватар</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            {image && <Image style={styles.image} source={{ uri: image }} />}
+            <TouchableOpacity onPress={deleteImage}>
+              <Text>Удалить аватар</Text>
+            </TouchableOpacity>
+          </>
+        )}
+
         <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
           Имя пользователя
         </Text>
@@ -249,6 +333,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 140,
     height: 140,
+    borderRadius: 100,
   },
 
   inputView: {
@@ -299,5 +384,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-export default Settings;

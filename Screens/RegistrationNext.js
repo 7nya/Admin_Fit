@@ -30,12 +30,13 @@ export default Registration = () => {
   const [description, setDescription] = useState("");
   const route = useRoute();
   const { email, username, isCoach, password, confirmPassword } = route.params;
+  const [avatar, setAvatar] = useState(null);
 
   const navigation = useNavigation();
 
   const options = [
-    { label: "Male", value: "Male" },
-    { label: "Female", value: "Female" },
+    { label: "Мужчина", value: "Male" },
+    { label: "Женщина", value: "Female" },
   ];
 
   const handleSignUp = async () => {
@@ -52,7 +53,7 @@ export default Registration = () => {
             .collection("instructors")
             .doc(user.uid)
             .set({
-              age: Number(age),
+              age: age,
               description: description,
               username: username,
               firstName: firstName,
@@ -60,6 +61,7 @@ export default Registration = () => {
               gender: gender,
               email: email,
               isCoach: isCoach,
+              avatar: avatar
             });
         })
         .catch((error) => {
