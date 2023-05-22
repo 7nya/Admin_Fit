@@ -55,7 +55,9 @@ export const createUserDocument = async (instructor, additionalData) => {
           age,
           isCoach,
           description,
-          avatar
+          avatar,
+          clientQuery,
+          coachQuery
         }
       )
       console.log('succes')

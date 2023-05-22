@@ -7,6 +7,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator
 } from "react-native";
 import Muscle from "../assets/muscle1.png";
 import { auth, storage } from "../firebase";
@@ -169,8 +170,8 @@ export default Settings = ({}) => {
 
   if (!user) {
     return (
-      <View>
-        <Text>Loading...</Text>
+      <View style={styles.container}>
+        <ActivityIndicator />
       </View>
     );
   }
@@ -323,7 +324,7 @@ export default Settings = ({}) => {
             <Text style={styles.loginText}>Изменить пароль</Text>
           </TouchableOpacity>
 
-          <Text> | </Text>
+          <Text>   |   </Text>
 
           <TouchableOpacity onPress={handleLogout} style={styles.forgot_button}>
             <Text style={styles.loginText}>Выйти из аккаунта</Text>

@@ -4,7 +4,7 @@ import { firebase } from "../firebase";
 import { useNavigation } from "@react-navigation/core";
 import Muscle from "../assets/muscle1.png";
 
-const Person = () => {
+const UsersStack = () => {
   const [users, setUsers] = useState([]);
   const db = firebase.firestore();
   const navigation = useNavigation();
@@ -43,7 +43,7 @@ const Person = () => {
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
-        <View style={{flexDirection: 'row'}}>
+        <View style={{flexDirection: 'row', alignItems:'center'}}>
           <View style={{marginRight: 16}}>
             <Image 
               style={styles.image} 
@@ -51,7 +51,7 @@ const Person = () => {
             />
           </View>
            
-          <View>
+          <View style={{flexShrink: 1}}>
             <Text style={styles.title}>{[item.firstname," ",item.lastname]}</Text>
             <Text style={styles.subtitle}>{item.email}</Text>
           </View>
@@ -101,4 +101,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Person;
+export default UsersStack;

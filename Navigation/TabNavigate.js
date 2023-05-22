@@ -2,12 +2,14 @@ import React from "react";
 import { Image, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Person from "../Screens/Person";
-import Settings from "../Screens/Settings";
+import Person from "../Screens/UsersTab";
+import Settings from "../Screens/SettingsTab";
 import ForgotPassword from "../Screens/ForgotPassword";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import usersIcon from "../assets/users.png";
 import settingsIcon from "../assets/settings.png";
+import Clients from "../Screens/QueryTab";
+import fitnessIcon from "../assets/fitness.png"
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +36,20 @@ const TabNavigate = () => {
           headerTitleStyle: { fontSize: 25 },
           tabBarIcon: ({ color, size }) => (
             <Image style = {styles.logo} source={usersIcon}/>
+        )
+        }}
+      />
+      <Tab.Screen
+        name="Clients"
+        component={Clients}
+        options={{ 
+          tabBarLabel: "Clients",
+          headerShown: true,
+          title: "Заявки",
+          headerStyle: { backgroundColor: "#32b3be", },
+          headerTitleStyle: { fontSize: 25 },
+          tabBarIcon: ({ color, size }) => (
+            <Image style = {{width:50,height:50}} source={fitnessIcon}/>
         )
         }}
       />

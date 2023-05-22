@@ -12,7 +12,8 @@ import {
   Modal,
 } from "react-native";
 import Muscle from "../assets/muscle1.png";
-import { auth, createUserDocument } from "../firebase";
+import { auth, createUserDocument, storage } from "../firebase";
+import { firestore } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
 import "firebase/database";
@@ -20,7 +21,12 @@ import "firebase/auth";
 import { firebase } from "../firebase";
 import { useRoute } from "@react-navigation/native";
 import { CheckBox } from "@rneui/themed";
-import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
+import {
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Foundation,
+} from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -35,6 +41,8 @@ export default Registration = () => {
   const [avatar, setAvatar] = useState(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [clientQuery, setClientQuery] = useState([]);
+  const [coachQuery, setCoachQuery] = useState([]);
 
   const navigation = useNavigation();
 
@@ -66,6 +74,8 @@ export default Registration = () => {
               email: email,
               isCoach: isCoach,
               avatar: avatar,
+              clientQuery: clientQuery,
+              coachQuery: coachQuery,
             });
         })
         .catch((error) => {
@@ -360,5 +370,12 @@ const styles = StyleSheet.create({
   text_agreement: {
     fontSize: 15,
     padding: 10,
+  },
+  img_container: {
+    marginTop: -20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
 });

@@ -9,10 +9,11 @@ import Login from "../Screens/Login";
 import useAuth from "../AuthHook/useAuth";
 import Registration from "../Screens/Registration";
 import ForgotPassword from "../Screens/ForgotPassword";
-import PersonStack from "../Screens/PersonStack";
-import { UserDetailsScreen } from "../Screens/Person";
+import PersonStack from "../Screens/UsersStack";
+import { UserDetailsScreen } from "../Screens/UsersTab";
 import RegistrationNext from "../Screens/RegistrationNext";
 import Calorie from "../Screens/Calorie";
+import PersonQuery from "../Screens/QueryStack";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -37,6 +38,16 @@ const Navigate = () => {
               }}
             name="PersonStack"
             component={PersonStack}
+          />
+          <Stack.Screen
+            options={{
+               headerShown: true,
+               title: "Заявка",
+               headerStyle: { backgroundColor: "#32b3be", },
+               headerTitleStyle: { fontSize: 25 }, 
+              }}
+            name="PersonQuery"
+            component={PersonQuery}
           />
           <Stack.Screen
             options={{
