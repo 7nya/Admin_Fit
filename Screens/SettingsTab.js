@@ -40,7 +40,7 @@ const options = [
   { label: "Женщина", value: "Female" },
 ];
 
-export default Settings = ({}) => {
+export default SettingsTab = ({}) => {
   const navigation = useNavigation();
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");

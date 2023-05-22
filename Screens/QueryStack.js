@@ -17,7 +17,7 @@ import { doc, updateDoc, getDoc, arrayUnion, arrayRemove} from "firebase/firesto
 import { firestore } from "../firebase";
 
 
-const PersonQuery = ({ route }) => {
+const QueryStack = ({ route }) => {
   const { coachId } = route.params;
   const { user } = route.params;
   //const db = firebase.firestore();
@@ -61,8 +61,24 @@ const PersonQuery = ({ route }) => {
       console.log('error for sign up with coach: ', err.message)
     }
   };
-  const Cancel = () => {
-
+  const Cancel = async () => {
+    try {
+      //setLoading(true)
+      const coachRef = doc(firestore, `instructors/${coachId}`);
+      const userRef = doc(firestore, `users/${user.id}`);
+      await updateDoc(coachRef, {
+        clientQuery: arrayRemove(user.id),
+        //clients: arrayRemove(user.id),
+      });
+      await updateDoc(userRef, {
+        coachQuery: null,
+        //coach: coachId,
+      });
+      alert("Клиент удалён.")
+    } catch (err) {
+      console.log('error for sign up with coach: ', err.message);
+      navigation.navigate()
+    }
   };
 
   return (
@@ -175,5 +191,5 @@ const styles = StyleSheet.create({
     },
   });
   
-  export default PersonQuery;
+  export default QueryStack;
   

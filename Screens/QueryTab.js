@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/core";
 import Muscle from "../assets/muscle1.png";
 import useAuth from "../AuthHook/useAuth";
 
-const Clients = () => {
+const QueryTab = () => {
   const [users, setUsers] = useState([]);
   const db = firebase.firestore();
   const navigation = useNavigation();
@@ -73,7 +73,7 @@ const Clients = () => {
           },
         ]}
         onPress={() =>
-          navigation.navigate("PersonQuery", { user: item, coachId: user.uid })
+          navigation.navigate("QueryStack", { user: item, coachId: user.uid })
         }
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -136,4 +136,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Clients;
+export default QueryTab;

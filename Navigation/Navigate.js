@@ -5,15 +5,16 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import TabNavigate from "./TabNavigate";
-import Login from "../Screens/Login";
 import useAuth from "../AuthHook/useAuth";
+
+import Login from "../Screens/Login";
 import Registration from "../Screens/Registration";
-import ForgotPassword from "../Screens/ForgotPassword";
-import PersonStack from "../Screens/UsersStack";
-import { UserDetailsScreen } from "../Screens/UsersTab";
 import RegistrationNext from "../Screens/RegistrationNext";
+import ForgotPassword from "../Screens/ForgotPassword";
+import UsersStack from "../Screens/UsersStack";
 import Calorie from "../Screens/Calorie";
-import PersonQuery from "../Screens/QueryStack";
+import QueryStack from "../Screens/QueryStack";
+import ClientsStack from "../Screens/ClientsStack";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,8 +37,18 @@ const Navigate = () => {
                headerStyle: { backgroundColor: "#32b3be", },
                headerTitleStyle: { fontSize: 25 }, 
               }}
-            name="PersonStack"
-            component={PersonStack}
+            name="UsersStack"
+            component={UsersStack}
+          />
+          <Stack.Screen
+            options={{
+               headerShown: true,
+               title: "Информация",
+               headerStyle: { backgroundColor: "#32b3be", },
+               headerTitleStyle: { fontSize: 25 }, 
+              }}
+            name="ClientsStack"
+            component={ClientsStack}
           />
           <Stack.Screen
             options={{
@@ -46,8 +57,8 @@ const Navigate = () => {
                headerStyle: { backgroundColor: "#32b3be", },
                headerTitleStyle: { fontSize: 25 }, 
               }}
-            name="PersonQuery"
-            component={PersonQuery}
+            name="QueryStack"
+            component={QueryStack}
           />
           <Stack.Screen
             options={{

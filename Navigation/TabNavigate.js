@@ -2,14 +2,13 @@ import React from "react";
 import { Image, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Person from "../Screens/UsersTab";
-import Settings from "../Screens/SettingsTab";
-import ForgotPassword from "../Screens/ForgotPassword";
+import UsersTab from "../Screens/UsersTab";
+import SettingsTab from "../Screens/SettingsTab";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import usersIcon from "../assets/users.png";
-import settingsIcon from "../assets/settings.png";
-import Clients from "../Screens/QueryTab";
-import fitnessIcon from "../assets/fitness.png"
+import QueryTab from "../Screens/QueryTab";
+import ClientsTab from "../Screens/ClientsTab";
+import { FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,40 +25,58 @@ const TabNavigate = () => {
       }}
     >
       <Tab.Screen
-        name="Person"
-        component={Person}
+        name="UsersTab"
+        component={UsersTab}
         options={{ 
-          tabBarLabel: "Person",
+          tabBarLabel: "UsersTab",
           headerShown: true,
           title: "Пользователи",
           headerStyle: { backgroundColor: "#32b3be", },
           headerTitleStyle: { fontSize: 25 },
           tabBarIcon: ({ color, size }) => (
-            <Image style = {styles.logo} source={usersIcon}/>
+            <FontAwesome5 name="users" size={30} color="black" />
         )
         }}
       />
       <Tab.Screen
-        name="Clients"
-        component={Clients}
+        name="ClientsTab"
+        component={ClientsTab}
         options={{ 
-          tabBarLabel: "Clients",
+          tabBarLabel: "ClientsTab",
+          headerShown: true,
+          title: "Клиенты",
+          headerStyle: { backgroundColor: "#32b3be", },
+          headerTitleStyle: { fontSize: 25 },
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="user-friends" size={30} color="black" />
+        )
+        }}
+      />
+      <Tab.Screen
+        name="QueryTab"
+        component={QueryTab}
+        options={{ 
+          tabBarLabel: "QueryTab",
           headerShown: true,
           title: "Заявки",
           headerStyle: { backgroundColor: "#32b3be", },
           headerTitleStyle: { fontSize: 25 },
           tabBarIcon: ({ color, size }) => (
-            <Image style = {{width:50,height:50}} source={fitnessIcon}/>
+            <MaterialCommunityIcons name="email-multiple" size={30} color="black" />
         )
         }}
       />
       <Tab.Screen
-        name="Settings"
-        component={Settings}
+        name="SettingsTab"
+        component={SettingsTab}
         options={{ 
-          tabBarLabel: "Settings",
+          tabBarLabel: "SettingsTab",
+          headerShown: true,
+          title: "Профиль",
+          headerStyle: { backgroundColor: "#32b3be", },
+          headerTitleStyle: { fontSize: 25 },
           tabBarIcon: ({ color, size }) => (
-            <Image style = {styles.logo} source={settingsIcon}/>
+            <FontAwesome5 name="user-cog" size={30} color="black" />
         )
        }}
       />

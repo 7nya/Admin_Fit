@@ -15,7 +15,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import Muscle from "../assets/muscle1.png";
 
 
-const PersonStack = ({ route }) => {
+const UsersStack = ({ route }) => {
   const { userId } = route.params
   const { user } = route.params;
   //const db = firebase.firestore();
@@ -86,11 +86,11 @@ const PersonStack = ({ route }) => {
             Возраст: {user.age} {ageText}
           </Text>
         </View>
-        <TouchableOpacity  onPress={() => navigation.navigate("Calorie", { user, userId })}  style={styles.loginBtn}>
+{/*         <TouchableOpacity  onPress={() => navigation.navigate("Calorie", { user, userId })}  style={styles.loginBtn}>
           <Text style={styles.subtitle}>
             История калорий
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
       </View>
 
@@ -147,4 +147,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PersonStack;
+export default UsersStack;
