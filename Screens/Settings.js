@@ -14,10 +14,15 @@ import { useNavigation } from "@react-navigation/core";
 import { signOut } from "firebase/auth";
 import useAuth from "../AuthHook/useAuth";
 import { CheckBox } from "@rneui/themed";
-import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
+import {
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Foundation,
+} from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
+import { FontAwesome } from "@expo/vector-icons";
 
 ///////////
 import {
@@ -47,11 +52,10 @@ export default Settings = ({}) => {
   ////////////
   const { user } = useAuth();
 
-  const Change = async () => {
+  const changeImage = async () => {
     await deleteImage();
     await pickImage();
   };
-
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -130,7 +134,7 @@ export default Settings = ({}) => {
   const checkInfo = () => {
     const regex = /^\d+$/;
 
-    if (age && gender && firstName && lastName/*  && username */) {
+    if (age && gender && firstName && lastName /*  && username */) {
       if (regex.test(age)) {
         return true;
       } else {
@@ -179,29 +183,41 @@ export default Settings = ({}) => {
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.container}>
         <StatusBar style="auto" />
-
         {!image ? (
           <>
             <Image style={styles.image} source={Muscle} />
-            <TouchableOpacity onPress={pickImage}>
-              <Text>Выбрать аватар</Text>
-            </TouchableOpacity>
+            <View style={styles.img_container}>
+              <View style={styles.change_icon}>
+                <TouchableOpacity
+                  style={{ marginLeft: 100 }}
+                  onPress={pickImage}
+                >
+                  <MaterialIcons name="edit" size={24} color="#32b3be" />
+                </TouchableOpacity>
+              </View>
+            </View>
           </>
         ) : (
           <>
             {image && <Image style={styles.image} source={{ uri: image }} />}
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity onPress={Change}>
-                <Text>Изменить аватар</Text>
+            <View style={styles.img_container}>
+              <TouchableOpacity
+                style={{ marginRight: 50 }}
+                onPress={deleteImage}
+              >
+                <FontAwesome name="trash" size={24} color="#32b3be" />
               </TouchableOpacity>
-              <Text>  |  </Text>
-              <TouchableOpacity onPress={deleteImage}>
-                <Text>Удалить аватар</Text>
+
+              <TouchableOpacity
+                style={{ marginLeft: 50 }}
+                onPress={changeImage}
+              >
+                <MaterialIcons name="edit" size={24} color="#32b3be" />
               </TouchableOpacity>
             </View>
           </>
         )}
-
+        {/* </View> */}
         {/* <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
           Имя пользователя
         </Text>
@@ -345,6 +361,8 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 100,
+    borderWidth: 3,
+    borderColor: "#32b3be",
   },
 
   inputView: {
@@ -393,5 +411,17 @@ const styles = StyleSheet.create({
     borderColor: "#32b3be",
     borderWidth: 1,
     flex: 1,
+  },
+
+  img_container: {
+    marginTop: -20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+
+  change_icon: {
+    alignItems: "flex-end",
   },
 });

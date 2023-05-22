@@ -18,7 +18,7 @@ import weightIcon from "../assets/weight.png";
 const PersonStack = ({ route }) => {
   const { userId } = route.params
   const { user } = route.params;
-  const db = firebase.firestore();
+  //const db = firebase.firestore();
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
 
@@ -143,6 +143,8 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 100,
+    borderWidth: 3,
+    borderColor:'#32b3be'
   },
   icon: {
     width: 50,
