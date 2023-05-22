@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Alert,
+  Modal,
 } from "react-native";
 import Muscle from "../assets/muscle1.png";
 import { auth, createUserDocument } from "../firebase";
@@ -21,6 +22,7 @@ import { useRoute } from "@react-navigation/native";
 import { CheckBox } from "@rneui/themed";
 import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import { AntDesign } from "@expo/vector-icons";
 
 export default Registration = () => {
   const [firstName, setFirstName] = useState("");
@@ -29,8 +31,10 @@ export default Registration = () => {
   const [gender, setGender] = useState("");
   const [description, setDescription] = useState("");
   const route = useRoute();
-  const { email, username, isCoach, password, confirmPassword } = route.params;
+  const { email, /* username, */ isCoach, password, confirmPassword } = route.params;
   const [avatar, setAvatar] = useState(null);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const navigation = useNavigation();
 
@@ -40,7 +44,7 @@ export default Registration = () => {
   ];
 
   const handleSignUp = async () => {
-    if (firstName && lastName && age && gender) {
+    if (firstName && lastName && age && gender && agreedToTerms) {
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
@@ -55,13 +59,13 @@ export default Registration = () => {
             .set({
               age: age,
               description: description,
-              username: username,
+              /* username: username, */
               firstName: firstName,
               lastName: lastName,
               gender: gender,
               email: email,
               isCoach: isCoach,
-              avatar: avatar
+              avatar: avatar,
             });
         })
         .catch((error) => {
@@ -69,7 +73,11 @@ export default Registration = () => {
           console.error(error);
         });
     } else {
-      alert("Заполните все обязательные поля!");
+      if (agreedToTerms) {
+        alert("Заполните все обязательные поля!");
+      } else {
+        alert("Условия пользовательского соглашения являются обязательными.");
+      }
     }
   };
 
@@ -147,6 +155,43 @@ export default Registration = () => {
           ))}
         </View>
 
+        <View style={{ flexDirection: "row", marginVertical: 0 }}>
+          <CheckBox
+            checked={agreedToTerms}
+            onPress={() => setAgreedToTerms(!agreedToTerms)}
+            containerStyle={{
+              backgroundColor: "#b1fff1",
+              marginVertical: 8,
+              padding: 0,
+            }}
+            checkedIcon={
+              <MaterialCommunityIcons
+                name="check-circle"
+                size={24}
+                color="#32b3be"
+              />
+            }
+            uncheckedIcon={
+              <MaterialCommunityIcons
+                name="checkbox-blank-circle-outline"
+                size={24}
+                color="#32b3be"
+              />
+            }
+          />
+          <View>
+            <Text>Я согласен с условиями</Text>
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
+              type="TERTIARY"
+            >
+              <Text style={{ color: "#0772A1", marginBottom: 10 }}>
+                Пользовательского соглашения
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
         <TouchableOpacity onPress={handleSignUp} style={styles.loginBtn}>
           <Text style={styles.loginText}>Регистрация</Text>
         </TouchableOpacity>
@@ -156,6 +201,74 @@ export default Registration = () => {
             <Text style={styles.forgot_button}> Назад </Text>
           </TouchableOpacity>
         </View>
+
+        <Modal visible={modalVisible} animationType="fade" transparent={true}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              marginVertical: 10,
+            }}
+          >
+            <ScrollView
+              style={{
+                width: 380,
+                height: 350,
+                backgroundColor: "#ffe9bd",
+                borderRadius: 10,
+                borderWidth: 2,
+                borderColor: "#32b3be",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  marginTop: 5,
+                  marginLeft: 5,
+                }}
+              >
+                <AntDesign
+                  name="close"
+                  style={{ color: "#E52B50", fontSize: 35 }}
+                  onPress={() => setModalVisible(false)}
+                />
+              </View>
+
+              <Text style={styles.title_agreement}>
+                Пользовательское соглашение
+              </Text>
+
+              <Text style={styles.text_agreement}>
+                {"\n"}
+                1. При использовании нашего приложения, вы соглашаетесь на сбор
+                и использование ваших персональных данных: Фамилия, имя, год
+                рождения, email и пол.{"\n"}
+                {"\n"}
+                2. Мы собираем и обрабатываем ваши персональные данные для целей
+                аутентификации и обработки ваших запросов.{"\n"}
+                {"\n"}
+                3. Мы не передаем ваши персональные данные третьим лицам без
+                вашего согласия, за исключением случаев, предусмотренных
+                законодательством.{"\n"}
+                {"\n"}
+                4. Мы храним ваши персональные данные только в течение
+                необходимого периода для достижения указанных целей.{"\n"}
+                {"\n"}
+                5. Мы принимаем меры для обеспечения безопасности ваших данных,
+                но не можем гарантировать абсолютную безопасность в Интернете.{"\n"}
+                {"\n"}
+                6. Вы имеете право запросить доступ, исправление или удаление
+                ваших персональных данных в соответствии с применимым
+                законодательством.{"\n"}
+                {"\n"}
+                7. Мы оставляем за собой право внести изменения в настоящее
+                соглашение и уведомим вас о таких изменениях.
+                {"\n"}
+              </Text>
+            </ScrollView>
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     </ScrollView>
   );
@@ -237,5 +350,15 @@ const styles = StyleSheet.create({
 
   checkbox_container: {
     flexDirection: "row",
+  },
+
+  title_agreement: {
+    fontWeight: "bold",
+    fontSize: 18,
+    textAlign: "center",
+  },
+  text_agreement: {
+    fontSize: 15,
+    padding: 10,
   },
 });

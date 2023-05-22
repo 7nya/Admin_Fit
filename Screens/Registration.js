@@ -28,11 +28,11 @@ export default Registration = ({ route }) => {
   const navigation = useNavigation();
 
   const handleSignUp = () => {
-    if (username && email && password && confirmPassword) {
+    if (/* username &&  */email && password && confirmPassword) {
       if (password == confirmPassword) {
         navigation.navigate("RegistrationNext", {
           email,
-          username,
+          /* username, */
           isCoach,
           password,
           confirmPassword,
@@ -50,7 +50,7 @@ export default Registration = ({ route }) => {
       <Image style={styles.image} source={Muscle} />
       <StatusBar style="auto" />
 
-      <View style={styles.inputView}>
+{/*       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
           placeholder="Имя пользователя"
@@ -58,7 +58,7 @@ export default Registration = ({ route }) => {
           value={username}
           onChangeText={(value) => setUsername(value)}
         />
-      </View>
+      </View> */}
 
       <View style={styles.inputView}>
         <TextInput

@@ -20,6 +20,7 @@ const PersonStack = ({ route }) => {
   const { user } = route.params;
   const db = firebase.firestore();
   const navigation = useNavigation();
+  const [image, setImage] = useState(null);
 
   let ageText = "";
 
@@ -34,6 +35,11 @@ const PersonStack = ({ route }) => {
   } else {
     ageText = "лет";
   }
+
+  useEffect(() => {
+    setImage(user.avatar);
+  }, []);
+
 /*
   useEffect(() => {
     const unsubscribe = db.collection("users").onSnapshot((snapshot) => {
@@ -76,7 +82,19 @@ const PersonStack = ({ route }) => {
   return (
     <View style={styles.container}>
       <View style={{ alignItems: "center" }}>
-        <Image style={styles.image} source={Muscle} />
+
+        {/* <Image style={styles.image} source={Muscle} /> */}
+        {!image ? (
+          <>
+            <Image style={styles.image} source={Muscle} />
+          </>
+        ) : (
+          <>
+            {image && <Image style={styles.image} source={{ uri: image }} />}
+
+          </>
+        )}
+
         <Text style={styles.title}>{user.firstname + " " + user.lastname}</Text>
         <Text style={styles.subtitle}>{user.email}</Text>
 
@@ -124,6 +142,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     width: 140,
     height: 140,
+    borderRadius: 100,
   },
   icon: {
     width: 50,

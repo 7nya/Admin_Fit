@@ -41,7 +41,7 @@ export default Settings = ({}) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [description, setDescription] = useState("");
-  const [username, setUsername] = useState("");
+  /* const [username, setUsername] = useState(""); */
   //////////////
   const [image, setImage] = useState(null);
   ////////////
@@ -122,7 +122,7 @@ export default Settings = ({}) => {
       setFirstName(user.firstName);
       setLastName(user.lastName);
       setDescription(user.description);
-      setUsername(user.username);
+      /* setUsername(user.username); */
       setImage(user.avatar);
     }
   }, [user]);
@@ -130,7 +130,7 @@ export default Settings = ({}) => {
   const checkInfo = () => {
     const regex = /^\d+$/;
 
-    if (age && gender && firstName && lastName && username) {
+    if (age && gender && firstName && lastName/*  && username */) {
       if (regex.test(age)) {
         return true;
       } else {
@@ -154,7 +154,7 @@ export default Settings = ({}) => {
             firstName: firstName,
             lastName: lastName,
             description: description,
-            username: username,
+            /* username: username, */
           });
         }
       } catch (err) {
@@ -202,7 +202,7 @@ export default Settings = ({}) => {
           </>
         )}
 
-        <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
+        {/* <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
           Имя пользователя
         </Text>
         <View style={styles.inputView}>
@@ -213,7 +213,7 @@ export default Settings = ({}) => {
             value={username}
             onChangeText={(value) => setUsername(value)}
           />
-        </View>
+        </View> */}
 
         <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
           Фамилия

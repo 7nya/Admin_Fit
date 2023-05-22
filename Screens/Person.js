@@ -1,7 +1,8 @@
-import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
+import { View, Text, FlatList, Pressable, StyleSheet, Image } from "react-native";
 import React, { useState, useEffect } from "react";
 import { firebase } from "../firebase";
 import { useNavigation } from "@react-navigation/core";
+import Muscle from "../assets/muscle1.png";
 
 const Person = () => {
   const [users, setUsers] = useState([]);
@@ -38,12 +39,23 @@ const Person = () => {
               pressed || pressedIndex === index ? "#32b3be" : "#b1fff1",
           },
         ]}
-        onPress={ () => navigation.navigate("PersonStack", {  user:item, userId: item.id   }) }
+        onPress={ () => navigation.navigate("PersonStack", { user:item, userId: item.id }) }
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
-        <Text style={styles.title}>{[item.firstname," ",item.lastname]}</Text>
-        <Text style={styles.subtitle}>{item.email}</Text>
+        <View style={{flexDirection: 'row'}}>
+          <View style={{marginRight: 16}}>
+            <Image 
+              style={styles.image} 
+              source={item.avatar ? { uri: item.avatar } : Muscle}
+            />
+          </View>
+           
+          <View>
+            <Text style={styles.title}>{[item.firstname," ",item.lastname]}</Text>
+            <Text style={styles.subtitle}>{item.email}</Text>
+          </View>
+        </View>
       </Pressable>
     );
   };
@@ -63,19 +75,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 0,
+    backgroundColor: "#ffe9bd",
   },
   item: {
     backgroundColor: "#b1fff1",
-    padding: 20,
+    padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
     borderRadius: 25,
+    borderColor:"#32b3be",
   },
   title: {
     fontSize: 28,
   },
   subtitle: {
     fontSize: 16,
+  },
+  image: {
+    marginBottom: 0,
+    width: 80,
+    height: 80,
+    borderRadius: 100,
   },
 });
 
