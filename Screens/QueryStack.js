@@ -56,10 +56,12 @@ const QueryStack = ({ route }) => {
         coachQuery: null,
         coach: coachId,
       });
-      alert("Клиент принят.")
+      route.params.setRefreshQuery(true);
+      alert("Заявка принята.")
     } catch (err) {
       console.log('error for sign up with coach: ', err.message)
     }
+    navigation.navigate("QueryTab")
   };
   const Cancel = async () => {
     try {
@@ -74,11 +76,12 @@ const QueryStack = ({ route }) => {
         coachQuery: null,
         //coach: coachId,
       });
-      alert("Клиент удалён.")
+      route.params.setRefreshQuery(true);
+      alert("Заявка отклонена.")
     } catch (err) {
       console.log('error for sign up with coach: ', err.message);
-      navigation.navigate()
     }
+    navigation.navigate("QueryTab")
   };
 
   return (

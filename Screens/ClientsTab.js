@@ -1,12 +1,13 @@
 import { View, Text, FlatList, Pressable, StyleSheet, Image } from "react-native";
-import React, { useState, useEffect, ActivityIndicator } from "react";
+import React, { useState, useEffect, ActivityIndicator, useCallback } from "react";
 import { firebase } from "../firebase";
 import { useNavigation } from "@react-navigation/core";
 import Muscle from "../assets/muscle1.png";
 import useAuth from "../AuthHook/useAuth";
 
+
 const ClientsTab = () => {
-  const [users, setUsers] = useState([]);
+  const [clients, setClients] = useState([]);
   const db = firebase.firestore();
   const navigation = useNavigation();
   const [pressedIndex, setPressedIndex] = useState(null);
@@ -23,19 +24,19 @@ const ClientsTab = () => {
           const usersRef = db
             .collection("users")
             .where(firebase.firestore.FieldPath.documentId(), "in", clients); // Используем FieldPath для сравнения с ID документа
-          const unsubscribeUsers = usersRef.onSnapshot((snapshot) => {
+            const unsubscribeUsers = usersRef.onSnapshot((snapshot) => {
             const usersData = snapshot.docs.map((doc) => ({
               id: doc.id,
               ...doc.data(),
             }));
-            setUsers(usersData);
+            setClients(usersData);
           });
 
           return () => {
             unsubscribeUsers();
           };
         } else {
-          setUsers([]); // Если 'clientQuery' пустой, очищаем список пользователей
+          setClients([]); // Если 'clientQuery' пустой, очищаем список пользователей
         }
       }, (error) => {
         console.log("Ошибка при получении данных тренера:", error);
@@ -45,6 +46,7 @@ const ClientsTab = () => {
       unsubscribe();
     };
 }}, [user]);
+
 
   const renderItem = ({ item, index }) => {
     const handlePressIn = () => {
@@ -97,11 +99,17 @@ const ClientsTab = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={users}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
+      {clients.length > 0 ? (
+        <FlatList
+          data={clients}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Нет клиентов</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -133,6 +141,15 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderWidth: 3,
     borderColor: "#32b3be",
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 20,
+    color: "#777",
   },
 });
 

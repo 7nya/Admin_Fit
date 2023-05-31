@@ -1,5 +1,4 @@
 import { initializeApp } from "firebase/app";
-
 import {getAuth} from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc} from 'firebase/firestore';
 import firebase from 'firebase/compat/app';
@@ -7,7 +6,6 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { getStorage } from "firebase/storage";
 import 'firebase/storage';
-
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -22,35 +20,27 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
-
 export const db = firestore;
-
 export const storage = getStorage(app);
 
 //export const storageAvatar = firebase.storage();
 
 export const createUserDocument = async (instructor, additionalData) => {
   if (!instructor) return
-
   // Получение ссылки на документ пользователя
   const userRef = doc(firestore, `instructors/${instructor.uid}`);
-
   // Проверка наличия документа пользователя в Firestore
   const snapshot = await getDoc(userRef);
-
   if(snapshot.exists) {
     const {email} = instructor;
-    const {username} = additionalData;
     try{
       // Создание документа пользователя
       await setDoc(
         userRef,
         {
           email,
-          username,
           gender,
           age,
           isCoach,

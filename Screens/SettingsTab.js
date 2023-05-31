@@ -47,7 +47,6 @@ export default SettingsTab = ({}) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [description, setDescription] = useState("");
-  /* const [username, setUsername] = useState(""); */
   //////////////
   const [image, setImage] = useState(null);
   ////////////
@@ -127,7 +126,6 @@ export default SettingsTab = ({}) => {
       setFirstName(user.firstName);
       setLastName(user.lastName);
       setDescription(user.description);
-      /* setUsername(user.username); */
       setImage(user.avatar);
     }
   }, [user]);
@@ -135,7 +133,7 @@ export default SettingsTab = ({}) => {
   const checkInfo = () => {
     const regex = /^\d+$/;
 
-    if (age && gender && firstName && lastName /*  && username */) {
+    if (age && gender && firstName && lastName) {
       if (regex.test(age)) {
         return true;
       } else {
@@ -159,9 +157,9 @@ export default SettingsTab = ({}) => {
             firstName: firstName,
             lastName: lastName,
             description: description,
-            /* username: username, */
           });
         }
+        alert("Информация обновлена");
       } catch (err) {
         console.log("got error: ", err.message);
       }
@@ -218,19 +216,7 @@ export default SettingsTab = ({}) => {
             </View>
           </>
         )}
-        {/* </View> */}
-        {/* <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
-          Имя пользователя
-        </Text>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Имя пользователя"
-            placeholderTextColor="#003f5c"
-            value={username}
-            onChangeText={(value) => setUsername(value)}
-          />
-        </View> */}
+ 
 
         <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
           Фамилия

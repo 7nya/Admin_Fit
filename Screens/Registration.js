@@ -20,7 +20,6 @@ export default Registration = ({ route }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [username, setUsername] = useState("");
   const isCoach = true;
   const [showPassword, setShowPassword] = useState(false);
   const handleToggleSwitch = () => setShowPassword(!showPassword);

@@ -13,17 +13,37 @@ import {
   import { MaterialCommunityIcons } from '@expo/vector-icons';
   import { FontAwesome5 } from '@expo/vector-icons';
   import Muscle from "../assets/muscle1.png";
-  
+  import { doc, updateDoc, getDoc, arrayUnion, arrayRemove} from "firebase/firestore";
+  import { firestore } from "../firebase";
   
   const ClientsStack = ({ route }) => {
-    const { userId } = route.params
+    const { coachId } = route.params
     const { user } = route.params;
     //const db = firebase.firestore();
     const navigation = useNavigation();
     const [image, setImage] = useState(null);
-  
+
+    const Delete = async () => {
+      try {
+        const coachRef = doc(firestore, `instructors/${coachId}`);
+        const userRef = doc(firestore, `users/${user.id}`);
+        await updateDoc(coachRef, {
+          clients: arrayRemove(user.id),
+        });
+        await updateDoc(userRef, {
+          coach: null,
+        });
+        alert("Клиент удалён.")
+
+      } catch (err) {
+        console.log('error for sign up with coach: ', err.message);
+      }
+      navigation.navigate("ClientsTab");
+    };
+    
+
     let ageText = "";
-  
+    
     if (user.age % 10 === 1 && user.age % 100 !== 11) {
       ageText = "год";
     } else if (
@@ -45,7 +65,6 @@ import {
         
         <View style={{ alignItems: "center" }}>
   
-          {/* <Image style={styles.image} source={Muscle} /> */}
           {!image ? (
             <>
               <Image style={styles.image} source={Muscle} />
@@ -86,12 +105,14 @@ import {
               Возраст: {user.age} {ageText}
             </Text>
           </View>
-          <TouchableOpacity  onPress={() => navigation.navigate("Calorie", { user, userId })}  style={styles.loginBtn}>
+          <TouchableOpacity  onPress={() => navigation.navigate("Calorie", { user, coachId })}  style={styles.loginBtn}>
             <Text style={styles.subtitle}>
               История калорий
             </Text>
           </TouchableOpacity>
-  
+          <TouchableOpacity onPress={Delete} style={styles.loginBtn}>
+            <Text style={styles.subtitle}>Удалить клиента</Text>
+          </TouchableOpacity>
         </View>
   
       </View>

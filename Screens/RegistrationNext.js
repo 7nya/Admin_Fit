@@ -37,7 +37,7 @@ export default Registration = () => {
   const [gender, setGender] = useState("");
   const [description, setDescription] = useState("");
   const route = useRoute();
-  const { email, /* username, */ isCoach, password, confirmPassword } = route.params;
+  const { email, isCoach, password, confirmPassword } = route.params;
   const [avatar, setAvatar] = useState(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -67,7 +67,6 @@ export default Registration = () => {
             .set({
               age: age,
               description: description,
-              /* username: username, */
               firstName: firstName,
               lastName: lastName,
               gender: gender,
