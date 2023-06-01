@@ -280,7 +280,7 @@ export default SettingsTab = ({}) => {
               title={option.label}
               checked={gender === option.value}
               onPress={() => setGender(option.value)}
-              containerStyle={{ backgroundColor: "#b1fff1" }}
+              containerStyle={{ backgroundColor: "#ffe9bd" }}
               checkedIcon={
                 <MaterialCommunityIcons
                   name="check-circle"
@@ -307,13 +307,13 @@ export default SettingsTab = ({}) => {
             onPress={() => navigation.navigate("ForgotPassword")}
             style={styles.forgot_button}
           >
-            <Text style={styles.loginText}>Изменить пароль</Text>
+            <Text>Изменить пароль</Text>
           </TouchableOpacity>
 
           <Text>   |   </Text>
 
           <TouchableOpacity onPress={handleLogout} style={styles.forgot_button}>
-            <Text style={styles.loginText}>Выйти из аккаунта</Text>
+            <Text>Выйти из аккаунта</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -324,7 +324,7 @@ export default SettingsTab = ({}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#b1fff1",
+    backgroundColor: "#ffe9bd",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -411,4 +411,9 @@ const styles = StyleSheet.create({
   change_icon: {
     alignItems: "flex-end",
   },
+
+  loginText: {
+    color: "white",
+    fontSize: 16
+  }
 });

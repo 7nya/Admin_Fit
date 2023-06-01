@@ -377,4 +377,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
   },
+  loginText: {
+    color: "white",
+    fontSize: 16
+  }
 });

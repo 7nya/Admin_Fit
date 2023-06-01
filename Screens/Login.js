@@ -18,6 +18,8 @@ import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
 import { firebase } from "../firebase";
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 export default Login = () => {
   const [email, setEmail] = useState(null);
@@ -60,9 +62,9 @@ export default Login = () => {
         // Обрабатываем ошибку
         alert(error);
       }) //;
-      .finally(() => {
+/*       .finally(() => {
         setIsLoading(false);
-      });
+      }); */
   };
 
   return (
@@ -89,11 +91,28 @@ export default Login = () => {
           value={password}
           onChangeText={(value) => setPassword(value)}
         />
-        <Switch value={showPassword} onValueChange={handleToggleSwitch} />
+        <TouchableOpacity onPress={handleToggleSwitch} style={{
+          justifyContent:'center',
+          marginRight:10,
+          color:'#32b3be'
+          }}>
+        <Icon 
+        name={showPassword ? 'eye' : 'eye-slash'} 
+        size={20} 
+        color='#32b3be'
+        />
+      </TouchableOpacity>
       </View>
 
       <TouchableOpacity onPress={handleSignIn} style={styles.loginBtn}>
-        <Text style={styles.loginText}>Войти</Text>
+        {isLoading ? (
+          <ActivityIndicator 
+            size="large"
+            color="white"
+          />
+        ) : (
+          <Text style={styles.loginText}>Войти</Text>
+        )}
       </TouchableOpacity>
 
       <View style={{ flexDirection: "row" }}>
@@ -159,4 +178,9 @@ const styles = StyleSheet.create({
     borderColor: "#b1fff1",
     borderWidth: 1,
   },
+
+  loginText: {
+    color: "white",
+    fontSize: 16
+  }
 });

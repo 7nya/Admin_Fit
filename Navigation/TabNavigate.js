@@ -33,6 +33,7 @@ const TabNavigate = () => {
           title: "Пользователи",
           headerStyle: { backgroundColor: "#32b3be", },
           headerTitleStyle: { fontSize: 25 },
+          headerTintColor: "white",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="users" size={30} color="black" />
         )
@@ -47,6 +48,7 @@ const TabNavigate = () => {
           title: "Клиенты",
           headerStyle: { backgroundColor: "#32b3be", },
           headerTitleStyle: { fontSize: 25 },
+          headerTintColor: "white",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="user-friends" size={30} color="black" />
         )
@@ -61,6 +63,7 @@ const TabNavigate = () => {
           title: "Заявки",
           headerStyle: { backgroundColor: "#32b3be", },
           headerTitleStyle: { fontSize: 25 },
+          headerTintColor: "white",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="email-multiple" size={30} color="black" />
         )
@@ -75,6 +78,7 @@ const TabNavigate = () => {
           title: "Профиль",
           headerStyle: { backgroundColor: "#32b3be", },
           headerTitleStyle: { fontSize: 25 },
+          headerTintColor: "white",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="user-cog" size={30} color="black" />
         )

@@ -15,6 +15,7 @@ import Muscle from "../assets/muscle1.png";
 import { useNavigation } from "@react-navigation/core";
 import "firebase/database";
 import "firebase/auth";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default Registration = ({ route }) => {
   const [email, setEmail] = useState("");
@@ -78,7 +79,17 @@ export default Registration = ({ route }) => {
           value={password}
           onChangeText={(value) => setPassword(value)}
         />
-        <Switch value={showPassword} onValueChange={handleToggleSwitch} />
+          <TouchableOpacity onPress={handleToggleSwitch} style={{
+          justifyContent:'center',
+          marginRight:10,
+          color:'#32b3be'
+          }}>
+          <Icon 
+            name={showPassword ? 'eye' : 'eye-slash'} 
+            size={20} 
+            color='#32b3be'
+          />
+        </TouchableOpacity>
       </View>
       <View style={styles.inputView}>
         <TextInput
@@ -165,4 +176,9 @@ const styles = StyleSheet.create({
   checkbox_container: {
     flexDirection: "row",
   },
+
+  loginText: {
+    color: "white",
+    fontSize: 16
+  }
 });

@@ -36,6 +36,7 @@ const Navigate = () => {
                title: "Информация",
                headerStyle: { backgroundColor: "#32b3be", },
                headerTitleStyle: { fontSize: 25 }, 
+               headerTintColor: "white",
               }}
             name="UsersStack"
             component={UsersStack}
@@ -46,6 +47,7 @@ const Navigate = () => {
                title: "Информация",
                headerStyle: { backgroundColor: "#32b3be", },
                headerTitleStyle: { fontSize: 25 }, 
+               headerTintColor: "white",
               }}
             name="ClientsStack"
             component={ClientsStack}
@@ -56,6 +58,7 @@ const Navigate = () => {
                title: "Заявка",
                headerStyle: { backgroundColor: "#32b3be", },
                headerTitleStyle: { fontSize: 25 }, 
+               headerTintColor: "white",
               }}
             name="QueryStack"
             component={QueryStack}
@@ -66,6 +69,7 @@ const Navigate = () => {
               title: "Сброс пароля",
               headerStyle: { backgroundColor: "#32b3be" },
               headerTitleStyle: { fontSize: 25 },
+              headerTintColor: "white",
             }}
             name="ForgotPassword"
             component={ForgotPassword}
@@ -76,6 +80,7 @@ const Navigate = () => {
               title: "Учёт калорий",
               headerStyle: { backgroundColor: "#32b3be" },
               headerTitleStyle: { fontSize: 25 },
+              headerTintColor: "white",
             }}
             name="Calorie"
             component={Calorie}
