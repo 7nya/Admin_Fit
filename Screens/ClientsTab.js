@@ -14,41 +14,45 @@ const ClientsTab = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    if(user){
-    const unsubscribe = db
-      .collection("instructors")
-      .doc(user.uid) 
-      .onSnapshot((doc) => {
-        const clients = doc.data()?.clients || []; // Добавляем '?', чтобы избежать ошибки, если 'clients' отсутствует
-        if (clients.length > 0) {
-          const usersRef = db
-            .collection("users")
-            .where(firebase.firestore.FieldPath.documentId(), "in", clients); // Используем FieldPath для сравнения с ID документа
-            const unsubscribeUsers = usersRef.onSnapshot((snapshot) => {
-            const usersData = snapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            setClients(usersData);
-          });
-
-          return () => {
-            unsubscribeUsers();
-          };
-        } else {
-          setClients([]); // Если 'clientQuery' пустой, очищаем список пользователей
-        }
-      }, (error) => {
-        console.log("Ошибка при получении данных тренера:", error);
-      });
-
-    return () => {
-      unsubscribe();
-    };
-}}, [user]);
-
+    if (user) {
+      const unsubscribe = db
+        .collection("instructors")
+        .doc(user.uid)
+        .onSnapshot((doc) => {
+          const clients = doc.data()?.clients || [];
+          if (clients.length > 0) {
+            const usersRef = db.collection("users");
+            const query = usersRef.where(
+              firebase.firestore.FieldPath.documentId(),
+              "in",
+              clients
+            );
+  
+            query
+              .get()
+              .then((snapshot) => {
+                const usersData = snapshot.docs.map((doc) => ({
+                  id: doc.id,
+                  ...doc.data(),
+                }));
+                setClients(usersData);
+              })
+              .catch((error) => {
+                console.log("Ошибка при получении данных пользователей:", error);
+              });
+          } else {
+            setClients([]);
+          }
+        });
+  
+      return () => {
+        unsubscribe();
+      };
+    }
+  }, [user]);
 
   const renderItem = ({ item, index }) => {
+    
     const handlePressIn = () => {
       setPressedIndex(index);
     };
@@ -75,7 +79,10 @@ const ClientsTab = () => {
           },
         ]}
         onPress={() =>
-          navigation.navigate("ClientsStack", { user: item, coachId: user.uid })
+          navigation.navigate("ClientsStack", { 
+            user: item, 
+            coachId: user.uid,
+            })
         }
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}

@@ -15,11 +15,15 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import Muscle from "../assets/muscle1.png";
 import { doc, updateDoc, getDoc, arrayUnion, arrayRemove} from "firebase/firestore";
 import { firestore } from "../firebase";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
+
 
 
 const QueryStack = ({ route }) => {
   const { coachId } = route.params;
   const { user } = route.params;
+
   //const db = firebase.firestore();
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
@@ -45,7 +49,6 @@ const QueryStack = ({ route }) => {
 
   const Apply = async () => {
     try {
-      //setLoading(true)
       const coachRef = doc(firestore, `instructors/${coachId}`);
       const userRef = doc(firestore, `users/${user.id}`);
       await updateDoc(coachRef, {
@@ -56,12 +59,11 @@ const QueryStack = ({ route }) => {
         coachQuery: null,
         coach: coachId,
       });
-      route.params.setRefreshQuery(true);
       alert("Заявка принята.")
+      navigation.navigate("QueryTab");
     } catch (err) {
       console.log('error for sign up with coach: ', err.message)
     }
-    navigation.navigate("QueryTab")
   };
   const Cancel = async () => {
     try {
@@ -70,18 +72,15 @@ const QueryStack = ({ route }) => {
       const userRef = doc(firestore, `users/${user.id}`);
       await updateDoc(coachRef, {
         clientQuery: arrayRemove(user.id),
-        //clients: arrayRemove(user.id),
       });
       await updateDoc(userRef, {
         coachQuery: null,
-        //coach: coachId,
       });
-      route.params.setRefreshQuery(true);
       alert("Заявка отклонена.")
+      navigation.navigate("QueryTab");
     } catch (err) {
       console.log('error for sign up with coach: ', err.message);
     }
-    navigation.navigate("QueryTab")
   };
 
   return (
@@ -195,4 +194,3 @@ const styles = StyleSheet.create({
   });
   
   export default QueryStack;
-  

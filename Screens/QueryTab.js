@@ -11,12 +11,11 @@ const QueryTab = () => {
   const navigation = useNavigation();
   const [pressedIndex, setPressedIndex] = useState(null);
   const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
 //L7j4alzCRkSegolvYuSzIY0737z1
 //d6FlYjJoHYWSzVyq8e83Ug0qzXx1
 //fic5iOB1tqW8CDTZN79MKvfEoxa2
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (user) {
       const unsubscribe = db
         .collection("instructors")
@@ -50,6 +49,43 @@ const QueryTab = () => {
         unsubscribe();
       };
     }
+  }, [user]); */
+  useEffect(() => {
+    if (user) {
+      const unsubscribe = db
+        .collection("instructors")
+        .doc(user.uid)
+        .onSnapshot((doc) => {
+          const clientQuery = doc.data()?.clientQuery || [];
+          if (clientQuery.length > 0) {
+            const usersRef = db.collection("users");
+            const query = usersRef.where(
+              firebase.firestore.FieldPath.documentId(),
+              "in",
+              clientQuery
+            );
+  
+            query
+              .get()
+              .then((snapshot) => {
+                const usersData = snapshot.docs.map((doc) => ({
+                  id: doc.id,
+                  ...doc.data(),
+                }));
+                setUsers(usersData);
+              })
+              .catch((error) => {
+                console.log("Ошибка при получении данных пользователей:", error);
+              });
+          } else {
+            setUsers([]);
+          }
+        });
+  
+      return () => {
+        unsubscribe();
+      };
+    }
   }, [user]);
 
 
@@ -64,14 +100,6 @@ const QueryTab = () => {
       setPressedIndex(null);
     };
 
-    if (loading) {
-      return (
-        <View style={styles.container}>
-          <ActivityIndicator />
-        </View>
-      );
-    }
-
     return (
       <Pressable
         style={({ pressed }) => [
@@ -84,7 +112,7 @@ const QueryTab = () => {
         onPress={() =>
             navigation.navigate("QueryStack", { 
               user: item, 
-              coachId: user.uid, })
+              coachId: user.uid })
         
         }
         onPressIn={handlePressIn}

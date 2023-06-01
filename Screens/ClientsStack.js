@@ -22,7 +22,7 @@ import {
     //const db = firebase.firestore();
     const navigation = useNavigation();
     const [image, setImage] = useState(null);
-
+    
     const Delete = async () => {
       try {
         const coachRef = doc(firestore, `instructors/${coachId}`);
@@ -34,11 +34,11 @@ import {
           coach: null,
         });
         alert("Клиент удалён.")
-
+        navigation.navigate("ClientsTab");
       } catch (err) {
         console.log('error for sign up with coach: ', err.message);
       }
-      navigation.navigate("ClientsTab");
+      
     };
     
 
