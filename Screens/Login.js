@@ -19,6 +19,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
 import { firebase } from "../firebase";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AwesomeAlert from 'react-native-awesome-alerts';
+
 
 
 export default Login = () => {
@@ -27,6 +29,8 @@ export default Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const handleToggleSwitch = () => setShowPassword(!showPassword);
+  const [errorAlert, setErrorAlert] = useState(false);
+  const [coachAlert, setCoachAlert] = useState(false);
 
   const navigation = useNavigation();
 
@@ -47,8 +51,9 @@ export default Login = () => {
               // Пользователь найден в базе данных Firebase
               const userData = doc.data();
               if (userData.isCoach == false) {
-                alert("Access denied. User is not an administrator.");
+                //alert("Access denied. User is not an administrator.");
                 firebase.auth().signOut();
+                //setCoachAlert(true);
                 // Пользователь является администратором, перенаправляем на страницу для администраторов
               }
             }
@@ -60,11 +65,9 @@ export default Login = () => {
       })
       .catch((error) => {
         // Обрабатываем ошибку
-        alert(error);
-      }) //;
-/*       .finally(() => {
         setIsLoading(false);
-      }); */
+        setErrorAlert(true);
+      })
   };
 
   return (
@@ -96,12 +99,12 @@ export default Login = () => {
           marginRight:10,
           color:'#32b3be'
           }}>
-        <Icon 
-        name={showPassword ? 'eye' : 'eye-slash'} 
-        size={20} 
-        color='#32b3be'
-        />
-      </TouchableOpacity>
+          <Icon 
+            name={showPassword ? 'eye' : 'eye-slash'} 
+            size={20} 
+            color='#32b3be'
+          />
+        </TouchableOpacity>
       </View>
 
       <TouchableOpacity onPress={handleSignIn} style={styles.loginBtn}>
@@ -127,8 +130,67 @@ export default Login = () => {
         </TouchableOpacity>
       </View>
 
-      {isLoading && <ActivityIndicator />}
+      <AwesomeAlert
+        show={errorAlert}
+        title="Ошибка"
+        titleStyle={{
+          fontSize: 22,
+          color:'red'
+        }}
+        message="Неправильный email или пароль"
+        messageStyle={{
+          fontSize: 16
+        }}
+        showConfirmButton={true}
+        confirmText="OK"
+        confirmButtonColor="#32b3be"
+        confirmButtonStyle={{
+          width:'50%',
+          alignItems:'center',
+          justifyContent:'center',
+          borderRadius: 25,
+        }}
+        confirmButtonTextStyle={{
+          fontSize: 16,
+        }}
+        onConfirmPressed={()=>{
+          setErrorAlert(false)
+        }}
+      />
+
+{/*       <AwesomeAlert
+        show={coachAlert}
+        title="Вход запрещён"
+        titleStyle={{
+          fontSize: 22,
+          color:'red'
+        }}
+        message="Вы не являетесь тренером"
+        messageStyle={{
+          fontSize: 16
+        }}
+        showConfirmButton={true}
+        confirmText="OK"
+        confirmButtonColor="#32b3be"
+        confirmButtonStyle={{
+          width:'50%',
+          alignItems:'center',
+          justifyContent:'center',
+          borderRadius: 25,
+        }}
+        confirmButtonTextStyle={{
+          fontSize: 16,
+        }}
+        onConfirmPressed={()=>{
+          setErrorAlert(false)
+        }}
+      /> */}
+
+
+
     </KeyboardAvoidingView>
+
+    
   );
 };
 

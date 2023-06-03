@@ -86,11 +86,6 @@ const UsersStack = ({ route }) => {
             Возраст: {user.age} {ageText}
           </Text>
         </View>
-{/*         <TouchableOpacity  onPress={() => navigation.navigate("Calorie", { user, userId })}  style={styles.loginBtn}>
-          <Text style={styles.subtitle}>
-            История калорий
-          </Text>
-        </TouchableOpacity> */}
 
       </View>
 

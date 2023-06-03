@@ -13,21 +13,23 @@ import { useNavigation } from "@react-navigation/core";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Muscle from "../assets/muscle1.png";
-import { doc, updateDoc, getDoc, arrayUnion, arrayRemove} from "firebase/firestore";
+import { doc, updateDoc, getDoc, arrayUnion, arrayRemove, addDoc, collection} from "firebase/firestore";
 import { firestore } from "../firebase";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
-
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 
 const QueryStack = ({ route }) => {
   const { coachId } = route.params;
   const { user } = route.params;
-
+  const { connectionCoachId } = route.params;
   //const db = firebase.firestore();
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
 
+  const [apply, setApply] = useState(false);
+  const [cancel, setCancel] = useState(false);
 
   let ageText = "";
 
@@ -51,16 +53,55 @@ const QueryStack = ({ route }) => {
     try {
       const coachRef = doc(firestore, `instructors/${coachId}`);
       const userRef = doc(firestore, `users/${user.id}`);
+
+      /////////////////////////////////////////////
+      
+      const connectionCollectionRef = await addDoc(collection(firestore, 'connection'), {
+
+      });
+
+      const connectionCollectionId = connectionCollectionRef.id
+
+      await updateDoc(connectionCollectionRef, {
+        participants: [user.id, coachId],
+        // Другие поля чата
+      });
+
+      /////////////////////////////////////////////
+
+      ///////////
+      const planCollectionRef = collection(firestore, `connection/${connectionCollectionId}/plan`)
+      await addDoc(planCollectionRef, {
+        plan: null,
+      });
+      ///////////
+      const workoutsCollectionRef = collection(firestore, `connection/${connectionCollectionId}/workouts`)
+      await addDoc(workoutsCollectionRef, {
+        name: null,
+        description: null,
+        excersises: null,
+        workoutImage: null,
+        sets: null 
+      });
+      ///////////
       await updateDoc(coachRef, {
+        connection: arrayUnion(connectionCollectionId), // Добавление идентификатора чата в поле пользователя
         clientQuery: arrayRemove(user.id),
         clients: arrayUnion(user.id),
       });
+
       await updateDoc(userRef, {
+        connection: connectionCollectionId, // Добавление идентификатора чата в поле тренера
         coachQuery: null,
         coach: coachId,
       });
-      alert("Заявка принята.")
-      navigation.navigate("QueryTab");
+
+      /* await updateDoc(chatDocRef, {
+        participants: [user.id, coachId],
+        // Другие поля чата
+      }); */
+
+      setApply(true);
     } catch (err) {
       console.log('error for sign up with coach: ', err.message)
     }
@@ -76,8 +117,7 @@ const QueryStack = ({ route }) => {
       await updateDoc(userRef, {
         coachQuery: null,
       });
-      alert("Заявка отклонена.")
-      navigation.navigate("QueryTab");
+      setCancel(true);
     } catch (err) {
       console.log('error for sign up with coach: ', err.message);
     }
@@ -131,14 +171,73 @@ const QueryStack = ({ route }) => {
 
         <View style={{ flexDirection: "row" }}>
           <TouchableOpacity onPress={Apply} style={styles.loginBtn}>
-            <Text style={styles.subtitle}>Принять</Text>
+            <Text style={styles.loginText}>Принять</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={Cancel} style={styles.loginBtn}>
-            <Text style={styles.subtitle}>Отклонить</Text>
+            <Text style={styles.loginText}>Отклонить</Text>
           </TouchableOpacity>
         </View>
       </View>
+
+      <AwesomeAlert
+        show={apply}
+        title="Заявка принята"
+        titleStyle={{
+          fontSize: 22,
+          color:'#32b3be'
+        }}
+        message="Заявка пользователя успешно принята"
+        messageStyle={{
+          fontSize: 16
+        }}
+        showConfirmButton={true}
+        confirmText="OK"
+        confirmButtonColor="#32b3be"
+        confirmButtonStyle={{
+          width:'50%',
+          alignItems:'center',
+          justifyContent:'center',
+          borderRadius: 25,
+        }}
+        confirmButtonTextStyle={{
+          fontSize: 16,
+        }}
+        onConfirmPressed={()=>{
+          setApply(false)
+          navigation.navigate("QueryTab");
+        }}
+      />
+
+<AwesomeAlert
+        show={cancel}
+        title="Заявка отклонена"
+        titleStyle={{
+          fontSize: 22,
+          color:'red'
+        }}
+        message="Заявка пользователя отклонена"
+        messageStyle={{
+          fontSize: 16
+        }}
+        showConfirmButton={true}
+        confirmText="OK"
+        confirmButtonColor="#32b3be"
+        confirmButtonStyle={{
+          width:'50%',
+          alignItems:'center',
+          justifyContent:'center',
+          borderRadius: 25,
+        }}
+        confirmButtonTextStyle={{
+          fontSize: 16,
+        }}
+        onConfirmPressed={()=>{
+          setCancel(false)
+          navigation.navigate("QueryTab");
+        }}
+      />
+
     </View>
   );
 };
@@ -191,6 +290,11 @@ const styles = StyleSheet.create({
       borderColor: "#b1fff1",
       borderWidth: 1,
     },
+    loginText: {
+      color: "white",
+      fontSize: 20
+    },
+    
   });
   
   export default QueryStack;

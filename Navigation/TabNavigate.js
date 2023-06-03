@@ -50,7 +50,7 @@ const TabNavigate = () => {
           headerTitleStyle: { fontSize: 25 },
           headerTintColor: "white",
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="user-friends" size={30} color="black" />
+            <FontAwesome5 name="user-check" size={30} color="black" />
         )
         }}
       />

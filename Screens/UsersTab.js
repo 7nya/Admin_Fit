@@ -39,7 +39,10 @@ const UsersTab = () => {
               pressed || pressedIndex === index ? "#32b3be" : "#b1fff1",
           },
         ]}
-        onPress={ () => navigation.navigate("UsersStack", { user:item, userId: item.id }) }
+        onPress={ () => navigation.navigate("UsersStack", { 
+          user:item, 
+          userId: item.id, 
+        }) }
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >

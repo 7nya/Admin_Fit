@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Alert,
   Modal,
+  ActivityIndicator
 } from "react-native";
 import Muscle from "../assets/muscle1.png";
 import { auth, createUserDocument, storage } from "../firebase";
@@ -29,6 +30,7 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default Registration = () => {
   const [firstName, setFirstName] = useState("");
@@ -43,6 +45,7 @@ export default Registration = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [clientQuery, setClientQuery] = useState([]);
   const [coachQuery, setCoachQuery] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigation = useNavigation();
 
@@ -52,6 +55,7 @@ export default Registration = () => {
   ];
 
   const handleSignUp = async () => {
+    setIsLoading(true);
     if (firstName && lastName && age && gender && agreedToTerms) {
       firebase
         .auth()
@@ -202,7 +206,14 @@ export default Registration = () => {
         </View>
 
         <TouchableOpacity onPress={handleSignUp} style={styles.loginBtn}>
+        {isLoading ? (
+          <ActivityIndicator 
+            size="large"
+            color="white"
+          />
+        ) : (
           <Text style={styles.loginText}>Регистрация</Text>
+        )}
         </TouchableOpacity>
 
         <View style={{ flexDirection: "row" }}>

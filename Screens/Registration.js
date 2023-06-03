@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/core";
 import "firebase/database";
 import "firebase/auth";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default Registration = ({ route }) => {
   const [email, setEmail] = useState("");
@@ -25,23 +26,25 @@ export default Registration = ({ route }) => {
   const [showPassword, setShowPassword] = useState(false);
   const handleToggleSwitch = () => setShowPassword(!showPassword);
 
+  const [passwordError, setPasswordError] = useState(false);
+  const [empty, setEmpty] = useState(false);
+
   const navigation = useNavigation();
 
   const handleSignUp = () => {
-    if (/* username &&  */email && password && confirmPassword) {
+    if (email && password && confirmPassword) {
       if (password == confirmPassword) {
         navigation.navigate("RegistrationNext", {
           email,
-          /* username, */
           isCoach,
           password,
           confirmPassword,
         });
       } else {
-        alert("Пароли не совпадают");
+        setPasswordError(true);
       }
     } else {
-      alert("Заполните все поля");
+      setEmpty(true);
     }
   };
 
@@ -49,16 +52,6 @@ export default Registration = ({ route }) => {
     <KeyboardAvoidingView style={styles.container}>
       <Image style={styles.image} source={Muscle} />
       <StatusBar style="auto" />
-
-{/*       <View style={styles.inputView}>
-        <TextInput
-          style={styles.TextInput}
-          placeholder="Имя пользователя"
-          placeholderTextColor="#003f5c"
-          value={username}
-          onChangeText={(value) => setUsername(value)}
-        />
-      </View> */}
 
       <View style={styles.inputView}>
         <TextInput
@@ -111,6 +104,63 @@ export default Registration = ({ route }) => {
           <Text style={styles.forgot_button}>Войти</Text>
         </TouchableOpacity>
       </View>
+
+      <AwesomeAlert
+        show={passwordError}
+        title="Ошибка"
+        titleStyle={{
+          fontSize: 22,
+          color:'red'
+        }}
+        message="Пароли не совпадают"
+        messageStyle={{
+          fontSize: 16
+        }}
+        showConfirmButton={true}
+        confirmText="OK"
+        confirmButtonColor="#32b3be"
+        confirmButtonStyle={{
+          width:'50%',
+          alignItems:'center',
+          justifyContent:'center',
+          borderRadius: 25,
+        }}
+        confirmButtonTextStyle={{
+          fontSize: 16,
+        }}
+        onConfirmPressed={()=>{
+          setPasswordError(false)
+        }}
+      />
+
+<AwesomeAlert
+        show={empty}
+        title="Ошибка"
+        titleStyle={{
+          fontSize: 22,
+          color:'red'
+        }}
+        message="Заполните все поля"
+        messageStyle={{
+          fontSize: 16
+        }}
+        showConfirmButton={true}
+        confirmText="OK"
+        confirmButtonColor="#32b3be"
+        confirmButtonStyle={{
+          width:'50%',
+          alignItems:'center',
+          justifyContent:'center',
+          borderRadius: 25,
+        }}
+        confirmButtonTextStyle={{
+          fontSize: 16,
+        }}
+        onConfirmPressed={()=>{
+          setEmpty(false)
+        }}
+      />
+
     </KeyboardAvoidingView>
   );
 };

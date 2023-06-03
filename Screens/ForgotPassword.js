@@ -15,29 +15,27 @@ import {
 import Muscle from "../assets/muscle1.png";
 import { auth } from "../firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState(null);
+  const [send, setSend] = useState(false);
+  const [errorAlert, setErrorAlert] = useState(false);
+  const [empty, setEmpty] = useState(false);
 
   const resetPassword = () => {
     if (email) {
       sendPasswordResetEmail(auth, email)
         .then(() => {
-          Alert.alert("Письмо для сброса пароля успешно отправлено!");
+          setSend(true);
         })
         .catch((error) => {
           const errorMessage = error.message;
           console.log(errorMessage);
-          Alert.alert(
-            "Почта не найдена.",
-            "Пожалуйста, введите корректный адрес.",
-            [{ text: "OK" }]
-          );
+          setErrorAlert(true);
         });
     } else {
-      Alert.alert("Пустое поле ввода.", "Введите адрес электронной почты.", [
-        { text: "OK" },
-      ]);
+      setEmpty(true);
     }
   };
 
@@ -64,6 +62,92 @@ export default function ForgotPassword() {
       <TouchableOpacity onPress={resetPassword} style={styles.loginBtn}>
         <Text style={styles.loginText}>Отправить письмо</Text>
       </TouchableOpacity>
+
+      <AwesomeAlert
+        show={send}
+        title="Готово!"
+        titleStyle={{
+          fontSize: 22,
+          color:'#32b3be'
+        }}
+        message="Письмо для сброса пароля успешно отправлено!"
+        messageStyle={{
+          fontSize: 16
+        }}
+        showConfirmButton={true}
+        confirmText="OK"
+        confirmButtonColor="#32b3be"
+        confirmButtonStyle={{
+          width:'50%',
+          alignItems:'center',
+          justifyContent:'center',
+          borderRadius: 25,
+        }}
+        confirmButtonTextStyle={{
+          fontSize: 16,
+        }}
+        onConfirmPressed={()=>{
+          setSend(false)
+        }}
+      />
+
+        
+<AwesomeAlert
+        show={errorAlert}
+        title="Почта не найдена"
+        titleStyle={{
+          fontSize: 22,
+          color:'red'
+        }}
+        message="Пожалуйста, введите корректный адрес электронной почты."
+        messageStyle={{
+          fontSize: 16
+        }}
+        showConfirmButton={true}
+        confirmText="OK"
+        confirmButtonColor="#32b3be"
+        confirmButtonStyle={{
+          width:'50%',
+          alignItems:'center',
+          justifyContent:'center',
+          borderRadius: 25,
+        }}
+        confirmButtonTextStyle={{
+          fontSize: 16,
+        }}
+        onConfirmPressed={()=>{
+          setErrorAlert(false)
+        }}
+      />
+
+<AwesomeAlert
+        show={empty}
+        title="Пустое поле ввода"
+        titleStyle={{
+          fontSize: 22,
+          color:'red'
+        }}
+        message="Введите адрес электронной почты"
+        messageStyle={{
+          fontSize: 16
+        }}
+        showConfirmButton={true}
+        confirmText="OK"
+        confirmButtonColor="#32b3be"
+        confirmButtonStyle={{
+          width:'50%',
+          alignItems:'center',
+          justifyContent:'center',
+          borderRadius: 25,
+        }}
+        confirmButtonTextStyle={{
+          fontSize: 16,
+        }}
+        onConfirmPressed={()=>{
+          setEmpty(false)
+        }}
+      />
+
     </KeyboardAvoidingView>
   );
 }
@@ -117,4 +201,9 @@ const styles = StyleSheet.create({
     borderColor: "#b1fff1",
     borderWidth: 1,
   },
+
+  loginText: {
+    color: "white",
+    fontSize: 16
+  }
 });

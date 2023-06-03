@@ -15,41 +15,6 @@ const QueryTab = () => {
 //d6FlYjJoHYWSzVyq8e83Ug0qzXx1
 //fic5iOB1tqW8CDTZN79MKvfEoxa2
 
-  /* useEffect(() => {
-    if (user) {
-      const unsubscribe = db
-        .collection("instructors")
-        .doc(user.uid)
-        .onSnapshot((doc) => {
-          const clientQuery = doc.data()?.clientQuery || [];
-          if (clientQuery.length > 0) {
-            const usersRef = db
-              .collection("users")
-              .where(firebase.firestore.FieldPath.documentId(), "in", clientQuery);
-              const unsubscribeUsers = usersRef.onSnapshot((snapshot) => {
-              const usersData = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-              }));
-              setUsers(usersData);
-            });
-
-            return () => {
-              unsubscribeUsers();
-            };
-          } else {
-            setUsers([]); // Если 'clientQuery' пустой, очищаем список пользователей
-          }
-        }, (error) => {
-          console.log("Ошибка при получении данных тренера:", error);
-
-        });
-
-      return () => {
-        unsubscribe();
-      };
-    }
-  }, [user]); */
   useEffect(() => {
     if (user) {
       const unsubscribe = db
@@ -88,9 +53,6 @@ const QueryTab = () => {
     }
   }, [user]);
 
-
-  console.log("заявка " + users.length + "\n _________")
-
   const renderItem = ({ item, index }) => {
     const handlePressIn = () => {
       setPressedIndex(index);
@@ -112,8 +74,8 @@ const QueryTab = () => {
         onPress={() =>
             navigation.navigate("QueryStack", { 
               user: item, 
-              coachId: user.uid })
-        
+              coachId: user.uid,
+              connectionCoachId: user.connection })
         }
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}

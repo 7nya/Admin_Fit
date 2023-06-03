@@ -1,87 +1,100 @@
-import {
-    View,
-    Text,
-    FlatList,
-    Pressable,
-    StyleSheet,
-    ActivityIndicator,
-  } from "react-native";
-  
-  import React, { useEffect, useState } from "react";
-  import {
-    collection,
-    getDoc,
-    doc,
-    query,
-    where,
-    getDocs,
-  } from "firebase/firestore";
-  import { useNavigation } from "@react-navigation/core";
-  import { auth, storage } from "../firebase";
-  import { firebase, firestore } from "../firebase";
-  import useAuth from "../AuthHook/useAuth";
-  
-  export default function CalorieDay({ route }) {
-    const { user } = route.params;
-    const [meals, setMeals] = useState([]);
-    const today = new Date().toISOString().split("T")[0];
-    useEffect(() => {
-      const fetchMeals = async () => {
-        if (user) {
-          try {
-            const userRef = doc(firestore, "users", user.id);
-            const foodRef = collection(userRef, "food");
-            const dateRef = doc(foodRef, today);
-            const mealsRef = collection(dateRef, "meals");
-            const querySnapshot = await getDocs(mealsRef);
-  
-            const mealsData = querySnapshot.docs.map((doc) => doc.data());
-            setMeals(mealsData);
-          } catch (error) {
-            console.log("Error fetching meals:", error);
-          }
-        }
-      };
-  
-      fetchMeals();
-    }, [user]);
-  
-    return (
-      <View style={styles.container}>
-        <FlatList
-          data={meals}
-          renderItem={({ item }) => (
-            <View style={styles.item}>
-              <Text style={styles.title}>{item.food}</Text>
-              <Text style={styles.subtitle}>Калорий: {item.calorie}</Text>
-              <Text style={styles.subtitle}>Тип: {item.mealType}</Text>
-              <Text style={styles.subtitle}>Время: {item.timestamp}</Text>
-            </View>
-          )}
-          showsVerticalScrollIndicator={false}
-          /* keyExtractor={(item) => item.uid} */
-        />
-      </View>
+import { View, Text, StyleSheet, Pressable, FlatList } from "react-native";
+import React, { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { firestore } from "../firebase";
+import { onSnapshot } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
+import { useNavigation } from "@react-navigation/core";
+import { format } from "date-fns"; //npm install date-fns
+import { ru } from "date-fns/locale";
+
+export default function Calorie({ route }) {
+  const { user } = route.params;
+  const navigation = useNavigation();
+  const [documents, setDocuments] = useState([]);
+  const { coachId } = route.params;
+  const [pressedIndex, setPressedIndex] = useState(null);
+
+  useEffect(() => {
+    const foodCollectionRef = collection(
+      firestore,
+      "users",
+      user.id, //ссылка на food
+      "food"
     );
-  }
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: "#ffe9bd",
-    },
-    item: {
-      backgroundColor: "#fd9",
-      padding: 20,
-      marginVertical: 8,
-      marginHorizontal: 8,
-      borderRadius: 14,
-    },
-    title: {
-      fontSize: 28,
-    },
-    subtitle: {
-      fontSize: 18,
-    },
-  });
-  
+    const unsubscribe = onSnapshot(foodCollectionRef, (snapshot) => {
+      const updatedDocuments = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const sortedDocuments = updatedDocuments.sort((a, b) => b.date.localeCompare(a.date));
+      setDocuments(sortedDocuments);
+
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const renderItem = ({ item, index }) => {
+    return (
+      <Pressable
+        style={({ pressed }) => [
+          styles.item,
+          {
+            backgroundColor:
+              pressed || pressedIndex === index ? "#32b3be" : "#b1fff1",
+          },
+        ]}
+        onPress={() =>
+          navigation.navigate("Calorie", { user, coachId, date: item.date })
+        }
+      >
+        
+      <Text style={styles.dateText}>
+        {format(new Date(item.date), "EEEE, d MMMM", { locale: ru })}
+      </Text>
+
+      </Pressable>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={documents}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffe9bd",
+  },
+  itemContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    marginVertical: 10,
+    marginHorizontal: 20,
+    padding: 20,
+    borderRadius: 10,
+  },
+  dateText: {
+    textAlign: "center",
+    fontSize: 20,
+  },
+  item: {
+    backgroundColor: "#b1fff1",
+    padding: 30,
+    marginVertical: 4,
+    marginHorizontal: 4,
+    borderRadius: 10,
+    borderColor: "#32b3be",
+  },
+});

@@ -82,6 +82,8 @@ const ClientsTab = () => {
           navigation.navigate("ClientsStack", { 
             user: item, 
             coachId: user.uid,
+            connectionCollectionId: item.connection,
+            connectionCoachId: user.connection,
             })
         }
         onPressIn={handlePressIn}
