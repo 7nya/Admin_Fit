@@ -7,7 +7,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import Muscle from "../assets/muscle1.png";
 import { auth, storage } from "../firebase";
@@ -15,17 +15,13 @@ import { useNavigation } from "@react-navigation/core";
 import { signOut } from "firebase/auth";
 import useAuth from "../AuthHook/useAuth";
 import { CheckBox } from "@rneui/themed";
-import {
-  MaterialCommunityIcons,
-  MaterialIcons,
-  Foundation,
-} from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { FontAwesome } from "@expo/vector-icons";
+import AwesomeAlert from "react-native-awesome-alerts";
 
-///////////
 import {
   ref,
   uploadBytes,
@@ -33,7 +29,6 @@ import {
   deleteObject,
 } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
-////////////
 
 const options = [
   { label: "Мужчина", value: "Male" },
@@ -47,10 +42,9 @@ export default SettingsTab = ({}) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [description, setDescription] = useState("");
-  //////////////
   const [image, setImage] = useState(null);
-  ////////////
   const { user } = useAuth();
+  const [alert, setAlert] = useState(false);
 
   const changeImage = async () => {
     await deleteImage();
@@ -159,7 +153,7 @@ export default SettingsTab = ({}) => {
             description: description,
           });
         }
-        alert("Информация обновлена");
+        setAlert(true);
       } catch (err) {
         console.log("got error: ", err.message);
       }
@@ -169,7 +163,7 @@ export default SettingsTab = ({}) => {
   if (!user) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator />
+        <ActivityIndicator size="large" color="#32b3be"/>
       </View>
     );
   }
@@ -216,7 +210,6 @@ export default SettingsTab = ({}) => {
             </View>
           </>
         )}
- 
 
         <Text style={{ alignSelf: "flex-start", marginHorizontal: 50 }}>
           Фамилия
@@ -310,13 +303,40 @@ export default SettingsTab = ({}) => {
             <Text>Изменить пароль</Text>
           </TouchableOpacity>
 
-          <Text>   |   </Text>
+          <Text> | </Text>
 
           <TouchableOpacity onPress={handleLogout} style={styles.forgot_button}>
             <Text>Выйти из аккаунта</Text>
           </TouchableOpacity>
         </View>
       </View>
+      <AwesomeAlert
+          show={alert}
+          title="Готово"
+          titleStyle={{
+            fontSize: 22,
+            color: "#32b3be",
+          }}
+          message="Данные изменены"
+          messageStyle={{
+            fontSize: 16,
+          }}
+          showConfirmButton={true}
+          confirmText="OK"
+          confirmButtonColor="#32b3be"
+          confirmButtonStyle={{
+            width: "50%",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 25,
+          }}
+          confirmButtonTextStyle={{
+            fontSize: 16,
+          }}
+          onConfirmPressed={() => {
+            setAlert(false);
+          }}
+        />
     </ScrollView>
   );
 };
@@ -414,6 +434,6 @@ const styles = StyleSheet.create({
 
   loginText: {
     color: "white",
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });

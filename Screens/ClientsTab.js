@@ -1,10 +1,20 @@
-import { View, Text, FlatList, Pressable, StyleSheet, Image } from "react-native";
-import React, { useState, useEffect, ActivityIndicator, useCallback } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Image,
+  ActivityIndicator
+} from "react-native";
+import React, {
+  useState,
+  useEffect,
+} from "react";
 import { firebase } from "../firebase";
 import { useNavigation } from "@react-navigation/core";
 import Muscle from "../assets/muscle1.png";
 import useAuth from "../AuthHook/useAuth";
-
 
 const ClientsTab = () => {
   const [clients, setClients] = useState([]);
@@ -27,7 +37,7 @@ const ClientsTab = () => {
               "in",
               clients
             );
-  
+
             query
               .get()
               .then((snapshot) => {
@@ -38,13 +48,16 @@ const ClientsTab = () => {
                 setClients(usersData);
               })
               .catch((error) => {
-                console.log("Ошибка при получении данных пользователей:", error);
+                console.log(
+                  "Ошибка при получении данных пользователей:",
+                  error
+                );
               });
           } else {
             setClients([]);
           }
         });
-  
+
       return () => {
         unsubscribe();
       };
@@ -52,7 +65,6 @@ const ClientsTab = () => {
   }, [user]);
 
   const renderItem = ({ item, index }) => {
-    
     const handlePressIn = () => {
       setPressedIndex(index);
     };
@@ -62,12 +74,12 @@ const ClientsTab = () => {
     };
 
     if (!user) {
-        return (
-          <View style={styles.container}>
-            <ActivityIndicator />
-          </View>
-        );
-      }
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator />
+        </View>
+      );
+    }
 
     return (
       <Pressable
@@ -79,26 +91,28 @@ const ClientsTab = () => {
           },
         ]}
         onPress={() =>
-          navigation.navigate("ClientsStack", { 
-            user: item, 
+          navigation.navigate("ClientsStack", {
+            user: item,
             coachId: user.uid,
             connectionCollectionId: item.connection,
             connectionCoachId: user.connection,
-            })
+          })
         }
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
-       <View style={{flexDirection: 'row', alignItems:'center'}}>
-          <View style={{marginRight: 16}}>
-            <Image 
-              style={styles.image} 
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={{ marginRight: 16 }}>
+            <Image
+              style={styles.image}
               source={item.avatar ? { uri: item.avatar } : Muscle}
             />
           </View>
-           
-          <View style={{flexShrink: 1}}>
-            <Text style={styles.title}>{[item.firstname," ",item.lastname]}</Text>
+
+          <View style={{ flexShrink: 1 }}>
+            <Text style={styles.title}>
+              {[item.firstname, " ", item.lastname]}
+            </Text>
             <Text style={styles.subtitle}>{item.email}</Text>
           </View>
         </View>
@@ -116,7 +130,7 @@ const ClientsTab = () => {
         />
       ) : (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Нет клиентов</Text>
+          <ActivityIndicator size="large" color="#32b3be"/>
         </View>
       )}
     </View>

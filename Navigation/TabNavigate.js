@@ -1,16 +1,12 @@
 import React from "react";
-import { Image, StyleSheet } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import UsersTab from "../Screens/UsersTab";
 import SettingsTab from "../Screens/SettingsTab";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import QueryTab from "../Screens/QueryTab";
 import ClientsTab from "../Screens/ClientsTab";
-import { FontAwesome5 } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-
-const Stack = createNativeStackNavigator();
+import { FontAwesome5 } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
 
@@ -27,62 +23,66 @@ const TabNavigate = () => {
       <Tab.Screen
         name="UsersTab"
         component={UsersTab}
-        options={{ 
+        options={{
           tabBarLabel: "UsersTab",
           headerShown: true,
           title: "Пользователи",
-          headerStyle: { backgroundColor: "#32b3be", },
+          headerStyle: { backgroundColor: "#32b3be" },
           headerTitleStyle: { fontSize: 25 },
           headerTintColor: "white",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="users" size={30} color="black" />
-        )
+          ),
         }}
       />
       <Tab.Screen
         name="ClientsTab"
         component={ClientsTab}
-        options={{ 
+        options={{
           tabBarLabel: "ClientsTab",
           headerShown: true,
           title: "Клиенты",
-          headerStyle: { backgroundColor: "#32b3be", },
+          headerStyle: { backgroundColor: "#32b3be" },
           headerTitleStyle: { fontSize: 25 },
           headerTintColor: "white",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="user-check" size={30} color="black" />
-        )
+          ),
         }}
       />
       <Tab.Screen
         name="QueryTab"
         component={QueryTab}
-        options={{ 
+        options={{
           tabBarLabel: "QueryTab",
           headerShown: true,
           title: "Заявки",
-          headerStyle: { backgroundColor: "#32b3be", },
+          headerStyle: { backgroundColor: "#32b3be" },
           headerTitleStyle: { fontSize: 25 },
           headerTintColor: "white",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="email-multiple" size={30} color="black" />
-        )
+            <MaterialCommunityIcons
+              name="email-multiple"
+              size={30}
+              color="black"
+            />
+          ),
         }}
       />
       <Tab.Screen
         name="SettingsTab"
         component={SettingsTab}
-        options={{ 
+        options={{
           tabBarLabel: "SettingsTab",
           headerShown: true,
           title: "Профиль",
-          headerStyle: { backgroundColor: "#32b3be", },
+          headerStyle: { backgroundColor: "#32b3be" },
           headerTitleStyle: { fontSize: 25 },
           headerTintColor: "white",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="user-cog" size={30} color="black" />
-        )
-       }}
+          ),
+        }}
       />
     </Tab.Navigator>
   );
@@ -90,9 +90,9 @@ const TabNavigate = () => {
 
 const styles = StyleSheet.create({
   logo: {
-      width: 40,
-      height: 40
-  }
-})
+    width: 40,
+    height: 40,
+  },
+});
 
 export default TabNavigate;

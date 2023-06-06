@@ -8,29 +8,19 @@ import {
   TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Alert,
   Modal,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import Muscle from "../assets/muscle1.png";
-import { auth, createUserDocument, storage } from "../firebase";
-import { firestore } from "../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
 import "firebase/database";
 import "firebase/auth";
 import { firebase } from "../firebase";
 import { useRoute } from "@react-navigation/native";
 import { CheckBox } from "@rneui/themed";
-import {
-  MaterialCommunityIcons,
-  MaterialIcons,
-  Foundation,
-} from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default Registration = () => {
   const [firstName, setFirstName] = useState("");
@@ -54,16 +44,15 @@ export default Registration = () => {
     { label: "Женщина", value: "Female" },
   ];
 
-  const handleSignUp = async () => {
+  const handleSignUpNext = async () => {
     setIsLoading(true);
     if (firstName && lastName && age && gender && agreedToTerms) {
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
-          // User создан, сохраняем информацию в базе данных Firebase
           const user = userCredential.user;
-          const isCoach = true; // Устанавливаем флаг администратора для нового пользователя
+          const isCoach = true;
           return firebase
             .firestore()
             .collection("instructors")
@@ -205,15 +194,12 @@ export default Registration = () => {
           </View>
         </View>
 
-        <TouchableOpacity onPress={handleSignUp} style={styles.loginBtn}>
-        {isLoading ? (
-          <ActivityIndicator 
-            size="large"
-            color="white"
-          />
-        ) : (
-          <Text style={styles.loginText}>Регистрация</Text>
-        )}
+        <TouchableOpacity onPress={handleSignUpNext} style={styles.loginBtn}>
+          {isLoading ? (
+            <ActivityIndicator size="large" color="white" />
+          ) : (
+            <Text style={styles.loginText}>Регистрация</Text>
+          )}
         </TouchableOpacity>
 
         <View style={{ flexDirection: "row" }}>
@@ -262,8 +248,8 @@ export default Registration = () => {
               <Text style={styles.text_agreement}>
                 {"\n"}
                 1. При использовании нашего приложения, вы соглашаетесь на сбор
-                и использование ваших персональных данных, таких как: фамилия, имя, год
-                рождения, email и пол.{"\n"}
+                и использование ваших персональных данных, таких как: фамилия,
+                имя, год рождения, email и пол.{"\n"}
                 {"\n"}
                 2. Мы собираем и обрабатываем ваши персональные данные для целей
                 аутентификации и обработки ваших запросов.{"\n"}
@@ -276,7 +262,8 @@ export default Registration = () => {
                 необходимого периода для достижения указанных целей.{"\n"}
                 {"\n"}
                 5. Мы принимаем меры для обеспечения безопасности ваших данных,
-                но не можем гарантировать абсолютную безопасность в Интернете.{"\n"}
+                но не можем гарантировать абсолютную безопасность в Интернете.
+                {"\n"}
                 {"\n"}
                 6. Вы имеете право запросить доступ, исправление или удаление
                 ваших персональных данных в соответствии с применимым
@@ -390,6 +377,6 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: "white",
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });

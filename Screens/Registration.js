@@ -15,8 +15,8 @@ import Muscle from "../assets/muscle1.png";
 import { useNavigation } from "@react-navigation/core";
 import "firebase/database";
 import "firebase/auth";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import AwesomeAlert from 'react-native-awesome-alerts';
+import Icon from "react-native-vector-icons/FontAwesome";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 export default Registration = ({ route }) => {
   const [email, setEmail] = useState("");
@@ -72,15 +72,18 @@ export default Registration = ({ route }) => {
           value={password}
           onChangeText={(value) => setPassword(value)}
         />
-          <TouchableOpacity onPress={handleToggleSwitch} style={{
-          justifyContent:'center',
-          marginRight:10,
-          color:'#32b3be'
-          }}>
-          <Icon 
-            name={showPassword ? 'eye' : 'eye-slash'} 
-            size={20} 
-            color='#32b3be'
+        <TouchableOpacity
+          onPress={handleToggleSwitch}
+          style={{
+            justifyContent: "center",
+            marginRight: 10,
+            color: "#32b3be",
+          }}
+        >
+          <Icon
+            name={showPassword ? "eye" : "eye-slash"}
+            size={20}
+            color="#32b3be"
           />
         </TouchableOpacity>
       </View>
@@ -110,57 +113,56 @@ export default Registration = ({ route }) => {
         title="Ошибка"
         titleStyle={{
           fontSize: 22,
-          color:'red'
+          color: "red",
         }}
         message="Пароли не совпадают"
         messageStyle={{
-          fontSize: 16
+          fontSize: 16,
         }}
         showConfirmButton={true}
         confirmText="OK"
         confirmButtonColor="#32b3be"
         confirmButtonStyle={{
-          width:'50%',
-          alignItems:'center',
-          justifyContent:'center',
+          width: "50%",
+          alignItems: "center",
+          justifyContent: "center",
           borderRadius: 25,
         }}
         confirmButtonTextStyle={{
           fontSize: 16,
         }}
-        onConfirmPressed={()=>{
-          setPasswordError(false)
+        onConfirmPressed={() => {
+          setPasswordError(false);
         }}
       />
 
-<AwesomeAlert
+      <AwesomeAlert
         show={empty}
         title="Ошибка"
         titleStyle={{
           fontSize: 22,
-          color:'red'
+          color: "red",
         }}
         message="Заполните все поля"
         messageStyle={{
-          fontSize: 16
+          fontSize: 16,
         }}
         showConfirmButton={true}
         confirmText="OK"
         confirmButtonColor="#32b3be"
         confirmButtonStyle={{
-          width:'50%',
-          alignItems:'center',
-          justifyContent:'center',
+          width: "50%",
+          alignItems: "center",
+          justifyContent: "center",
           borderRadius: 25,
         }}
         confirmButtonTextStyle={{
           fontSize: 16,
         }}
-        onConfirmPressed={()=>{
-          setEmpty(false)
+        onConfirmPressed={() => {
+          setEmpty(false);
         }}
       />
-
     </KeyboardAvoidingView>
   );
 };
@@ -229,6 +231,6 @@ const styles = StyleSheet.create({
 
   loginText: {
     color: "white",
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });

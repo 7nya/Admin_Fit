@@ -1,10 +1,13 @@
-import { View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import React, { useEffect, useState } from "react";
-import { collection, getDoc, doc, query, where, getDocs } from "firebase/firestore";
-import { useNavigation } from "@react-navigation/core";
-import { auth, storage } from "../firebase";
-import { firebase, firestore } from "../firebase";
-import useAuth from "../AuthHook/useAuth";
+import { collection, doc, getDocs } from "firebase/firestore";
+import { firestore } from "../firebase";
 
 export default function Calorie({ route }) {
   const { user } = route.params;
@@ -24,16 +27,17 @@ export default function Calorie({ route }) {
 
           const mealsData = querySnapshot.docs.map((doc) => doc.data());
 
-          // Преобразование строковых значений в числа
           const mealsDataWithCaloriesAsNumbers = mealsData.map((item) => ({
             ...item,
-            calorie: parseInt(item.calorie), // или parseFloat(item.calorie) для чисел с плавающей точкой
+            calorie: parseInt(item.calorie),
           }));
 
           setMeals(mealsDataWithCaloriesAsNumbers);
 
-          // Вычисление суммы калорий
-          const totalCalories = mealsDataWithCaloriesAsNumbers.reduce((sum, item) => sum + item.calorie, 0);
+          const totalCalories = mealsDataWithCaloriesAsNumbers.reduce(
+            (sum, item) => sum + item.calorie,
+            0
+          );
           setTotalCalories(totalCalories);
         } catch (error) {
           console.log("Error fetching meals:", error);
@@ -59,7 +63,9 @@ export default function Calorie({ route }) {
         showsVerticalScrollIndicator={false}
       />
 
-      <Text style={styles.totalCalories}>Общее количество калорий: {totalCalories}</Text>
+      <Text style={styles.totalCalories}>
+        Общее количество калорий: {totalCalories}
+      </Text>
     </View>
   );
 }

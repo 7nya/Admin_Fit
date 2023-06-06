@@ -6,22 +6,15 @@ import {
   View,
   Image,
   TextInput,
-  Button,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Alert,
   ActivityIndicator,
-  Switch,
 } from "react-native";
 import Muscle from "../assets/muscle1.png";
-import { auth } from "../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
 import { firebase } from "../firebase";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import AwesomeAlert from 'react-native-awesome-alerts';
-
-
+import Icon from "react-native-vector-icons/FontAwesome";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 export default Login = () => {
   const [email, setEmail] = useState(null);
@@ -41,33 +34,26 @@ export default Login = () => {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
-        // Успешный вход в систему, проверяем, является ли пользователь администратором
         const user = userCredential.user;
         const userRef = firebase.firestore().collection("users").doc(user.uid);
         userRef
           .get()
           .then((doc) => {
             if (doc.exists) {
-              // Пользователь найден в базе данных Firebase
               const userData = doc.data();
               if (userData.isCoach == false) {
-                //alert("Access denied. User is not an administrator.");
                 firebase.auth().signOut();
-                //setCoachAlert(true);
-                // Пользователь является администратором, перенаправляем на страницу для администраторов
               }
             }
           })
           .catch((error) => {
-            // Обрабатываем ошибку
             alert(error);
           });
       })
       .catch((error) => {
-        // Обрабатываем ошибку
         setIsLoading(false);
         setErrorAlert(true);
-      })
+      });
   };
 
   return (
@@ -94,25 +80,25 @@ export default Login = () => {
           value={password}
           onChangeText={(value) => setPassword(value)}
         />
-        <TouchableOpacity onPress={handleToggleSwitch} style={{
-          justifyContent:'center',
-          marginRight:10,
-          color:'#32b3be'
-          }}>
-          <Icon 
-            name={showPassword ? 'eye' : 'eye-slash'} 
-            size={20} 
-            color='#32b3be'
+        <TouchableOpacity
+          onPress={handleToggleSwitch}
+          style={{
+            justifyContent: "center",
+            marginRight: 10,
+            color: "#32b3be",
+          }}
+        >
+          <Icon
+            name={showPassword ? "eye" : "eye-slash"}
+            size={20}
+            color="#32b3be"
           />
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity onPress={handleSignIn} style={styles.loginBtn}>
         {isLoading ? (
-          <ActivityIndicator 
-            size="large"
-            color="white"
-          />
+          <ActivityIndicator size="large" color="white" />
         ) : (
           <Text style={styles.loginText}>Войти</Text>
         )}
@@ -135,30 +121,30 @@ export default Login = () => {
         title="Ошибка"
         titleStyle={{
           fontSize: 22,
-          color:'red'
+          color: "red",
         }}
         message="Неправильный email или пароль"
         messageStyle={{
-          fontSize: 16
+          fontSize: 16,
         }}
         showConfirmButton={true}
         confirmText="OK"
         confirmButtonColor="#32b3be"
         confirmButtonStyle={{
-          width:'50%',
-          alignItems:'center',
-          justifyContent:'center',
+          width: "50%",
+          alignItems: "center",
+          justifyContent: "center",
           borderRadius: 25,
         }}
         confirmButtonTextStyle={{
           fontSize: 16,
         }}
-        onConfirmPressed={()=>{
-          setErrorAlert(false)
+        onConfirmPressed={() => {
+          setErrorAlert(false);
         }}
       />
 
-{/*       <AwesomeAlert
+      {/*       <AwesomeAlert
         show={coachAlert}
         title="Вход запрещён"
         titleStyle={{
@@ -185,12 +171,7 @@ export default Login = () => {
           setErrorAlert(false)
         }}
       /> */}
-
-
-
     </KeyboardAvoidingView>
-
-    
   );
 };
 
@@ -243,6 +224,6 @@ const styles = StyleSheet.create({
 
   loginText: {
     color: "white",
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });

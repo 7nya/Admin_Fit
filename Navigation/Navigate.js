@@ -1,7 +1,5 @@
 import React from "react";
-import { Image, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import TabNavigate from "./TabNavigate";
@@ -20,7 +18,6 @@ import Chat from "../Screens/Chat";
 import Workouts from "../Screens/Workouts";
 
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
 
 const Navigate = () => {
   const { user } = useAuth();
@@ -35,34 +32,34 @@ const Navigate = () => {
           />
           <Stack.Screen
             options={{
-               headerShown: true,
-               title: "Информация",
-               headerStyle: { backgroundColor: "#32b3be", },
-               headerTitleStyle: { fontSize: 25 }, 
-               headerTintColor: "white",
-              }}
+              headerShown: true,
+              title: "Информация",
+              headerStyle: { backgroundColor: "#32b3be" },
+              headerTitleStyle: { fontSize: 25 },
+              headerTintColor: "white",
+            }}
             name="UsersStack"
             component={UsersStack}
           />
           <Stack.Screen
             options={{
-               headerShown: true,
-               title: "Информация",
-               headerStyle: { backgroundColor: "#32b3be", },
-               headerTitleStyle: { fontSize: 25 }, 
-               headerTintColor: "white",
-              }}
+              headerShown: true,
+              title: "Информация",
+              headerStyle: { backgroundColor: "#32b3be" },
+              headerTitleStyle: { fontSize: 25 },
+              headerTintColor: "white",
+            }}
             name="ClientsStack"
             component={ClientsStack}
           />
           <Stack.Screen
             options={{
-               headerShown: true,
-               title: "Заявка",
-               headerStyle: { backgroundColor: "#32b3be", },
-               headerTitleStyle: { fontSize: 25 }, 
-               headerTintColor: "white",
-              }}
+              headerShown: true,
+              title: "Заявка",
+              headerStyle: { backgroundColor: "#32b3be" },
+              headerTitleStyle: { fontSize: 25 },
+              headerTintColor: "white",
+            }}
             name="QueryStack"
             component={QueryStack}
           />
@@ -98,7 +95,6 @@ const Navigate = () => {
             }}
             name="CalorieDay"
             component={CalorieDay}
-          
           />
           <Stack.Screen
             options={{

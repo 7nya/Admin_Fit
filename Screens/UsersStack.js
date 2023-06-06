@@ -1,25 +1,11 @@
-import {
-  View,
-  Text,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import React, { useState, useEffect } from "react";
-import { firebase } from "../firebase";
-import { useNavigation } from "@react-navigation/core";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import Muscle from "../assets/muscle1.png";
 
-
 const UsersStack = ({ route }) => {
-  const { userId } = route.params
   const { user } = route.params;
-  //const db = firebase.firestore();
-  const navigation = useNavigation();
   const [image, setImage] = useState(null);
 
   let ageText = "";
@@ -42,19 +28,13 @@ const UsersStack = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      
       <View style={{ alignItems: "center" }}>
-
-        {/* <Image style={styles.image} source={Muscle} /> */}
         {!image ? (
           <>
             <Image style={styles.image} source={Muscle} />
           </>
         ) : (
-          <>
-            {image && <Image style={styles.image} source={{ uri: image }} />}
-
-          </>
+          <>{image && <Image style={styles.image} source={{ uri: image }} />}</>
         )}
 
         <Text style={styles.title}>{user.firstname + " " + user.lastname}</Text>
@@ -62,15 +42,22 @@ const UsersStack = ({ route }) => {
 
         <View style={{ flexDirection: "row", marginVertical: 6 }}>
           <View style={{ alignItems: "center", flex: 1 }}>
-          
-          <MaterialCommunityIcons name={user.gender === "Male" ? "gender-male" : "gender-female"} size={50} color="#32b3be" />
+            <MaterialCommunityIcons
+              name={user.gender === "Male" ? "gender-male" : "gender-female"}
+              size={50}
+              color="#32b3be"
+            />
             <Text style={{ textAlign: "center" }}>
               {user.gender === "Male" ? "Мужчина" : "Женщина"}
             </Text>
           </View>
 
           <View style={{ alignItems: "center", flex: 1 }}>
-          <MaterialCommunityIcons name="human-male-height" size={50} color="#32b3be" />
+            <MaterialCommunityIcons
+              name="human-male-height"
+              size={50}
+              color="#32b3be"
+            />
             <Text style={{ textAlign: "center" }}> {user.height} см</Text>
           </View>
 
@@ -79,16 +66,14 @@ const UsersStack = ({ route }) => {
             <Text style={{ textAlign: "center" }}>{user.weight} кг</Text>
           </View>
         </View>
-        <View style={{marginEnd:60, marginVertical:10}}>
+        <View style={{ marginEnd: 60, marginVertical: 10 }}>
           <Text style={styles.subtitle}>Активность: {user.activity}</Text>
           <Text style={styles.subtitle}>Цель: {user.goal}</Text>
           <Text style={styles.subtitle}>
             Возраст: {user.age} {ageText}
           </Text>
         </View>
-
       </View>
-
     </View>
   );
 };
@@ -105,7 +90,7 @@ const styles = StyleSheet.create({
     height: 140,
     borderRadius: 100,
     borderWidth: 3,
-    borderColor:'#32b3be'
+    borderColor: "#32b3be",
   },
   icon: {
     width: 50,

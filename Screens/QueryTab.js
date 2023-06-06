@@ -1,5 +1,17 @@
-import { View, Text, FlatList, Pressable, StyleSheet, Image } from "react-native";
-import React, { useState, useEffect, ActivityIndicator, useCallback } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Image,
+  ActivityIndicator
+} from "react-native";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { firebase } from "../firebase";
 import { useNavigation } from "@react-navigation/core";
 import Muscle from "../assets/muscle1.png";
@@ -11,9 +23,6 @@ const QueryTab = () => {
   const navigation = useNavigation();
   const [pressedIndex, setPressedIndex] = useState(null);
   const { user } = useAuth();
-//L7j4alzCRkSegolvYuSzIY0737z1
-//d6FlYjJoHYWSzVyq8e83Ug0qzXx1
-//fic5iOB1tqW8CDTZN79MKvfEoxa2
 
   useEffect(() => {
     if (user) {
@@ -29,7 +38,7 @@ const QueryTab = () => {
               "in",
               clientQuery
             );
-  
+
             query
               .get()
               .then((snapshot) => {
@@ -40,13 +49,16 @@ const QueryTab = () => {
                 setUsers(usersData);
               })
               .catch((error) => {
-                console.log("Ошибка при получении данных пользователей:", error);
+                console.log(
+                  "Ошибка при получении данных пользователей:",
+                  error
+                );
               });
           } else {
             setUsers([]);
           }
         });
-  
+
       return () => {
         unsubscribe();
       };
@@ -72,15 +84,16 @@ const QueryTab = () => {
           },
         ]}
         onPress={() =>
-            navigation.navigate("QueryStack", { 
-              user: item, 
-              coachId: user.uid,
-              connectionCoachId: user.connection })
+          navigation.navigate("QueryStack", {
+            user: item,
+            coachId: user.uid,
+            connectionCoachId: user.connection,
+          })
         }
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={{ marginRight: 16 }}>
             <Image
               style={styles.image}
@@ -89,7 +102,9 @@ const QueryTab = () => {
           </View>
 
           <View style={{ flexShrink: 1 }}>
-            <Text style={styles.title}>{[item.firstname, " ", item.lastname]}</Text>
+            <Text style={styles.title}>
+              {[item.firstname, " ", item.lastname]}
+            </Text>
             <Text style={styles.subtitle}>{item.email}</Text>
           </View>
         </View>
@@ -107,7 +122,7 @@ const QueryTab = () => {
         />
       ) : (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Нет заявок</Text>
+          <ActivityIndicator size="large" color="#32b3be"/>
         </View>
       )}
     </View>

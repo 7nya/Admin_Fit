@@ -1,16 +1,12 @@
 import {
   View,
   Text,
-  FlatList,
-  Pressable,
   StyleSheet,
   Image,
   TouchableOpacity,
-  Alert,
   TextInput,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { firebase } from "../firebase";
 import { useNavigation } from "@react-navigation/core";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -18,28 +14,22 @@ import Muscle from "../assets/muscle1.png";
 import {
   doc,
   updateDoc,
-  arrayUnion,
   arrayRemove,
   deleteDoc,
   collection,
   getDocs,
   deleteField,
-  addDoc
 } from "firebase/firestore";
 import { firestore } from "../firebase";
-import AwesomeAlert from 'react-native-awesome-alerts';
+import AwesomeAlert from "react-native-awesome-alerts";
 import { ScrollView } from "react-native-gesture-handler";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { getDoc } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ClientsStack = ({ route }) => {
   const [description, setDescription] = useState("");
   const { coachId } = route.params;
   const { user } = route.params;
-  const { chatId } = route.params;
-  const { connectionCollectionId } = route.params
-  //const { workoutCollectionId } = route.params;
+  const { connectionCollectionId } = route.params;
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
   const [clientDelete, setClientDelete] = useState(false);
@@ -50,7 +40,6 @@ const ClientsStack = ({ route }) => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Восстановление значения description из хранилища
         const savedDescription = await AsyncStorage.getItem(storageKey);
         if (savedDescription !== null) {
           setDescription(savedDescription);
@@ -66,7 +55,6 @@ const ClientsStack = ({ route }) => {
   useEffect(() => {
     const saveData = async () => {
       try {
-        // Сохранение значения description в хранилище
         await AsyncStorage.setItem(storageKey, description);
       } catch (error) {
         console.error("Ошибка при сохранении данных в хранилище:", error);
@@ -76,25 +64,26 @@ const ClientsStack = ({ route }) => {
     saveData();
   }, [description]);
 
-  
-    const handleSubmitPlan = async () => {
-      if (user) {
-        const planRef = collection(firestore, `connection/${user.connection}/plan`);
-    
-        const querySnapshot = await getDocs(planRef);
-        if (!querySnapshot.empty) {
-          const docRef = querySnapshot.docs[0].ref;
-        
-          try {
-            await updateDoc(docRef, { plan: description });
-            setPlanAlert(true);
-          } catch (error) {
-            console.error("Ошибка при обновлении поля 'plan':", error);
-          }
+  const handleSubmitPlan = async () => {
+    if (user) {
+      const planRef = collection(
+        firestore,
+        `connection/${user.connection}/plan`
+      );
+
+      const querySnapshot = await getDocs(planRef);
+      if (!querySnapshot.empty) {
+        const docRef = querySnapshot.docs[0].ref;
+
+        try {
+          await updateDoc(docRef, { plan: description });
+          setPlanAlert(true);
+        } catch (error) {
+          console.error("Ошибка при обновлении поля 'plan':", error);
         }
       }
-    };
-    
+    }
+  };
 
   const confirmDelete = () => {
     setClientDelete(true);
@@ -105,44 +94,39 @@ const ClientsStack = ({ route }) => {
       const coachRef = doc(firestore, `instructors/${coachId}`);
       const userRef = doc(firestore, `users/${user.id}`);
 
-      // Получение ссылки на подколлекцию messages
       const chatCollectionRef = collection(
         firestore,
         `connection/${connectionCollectionId}/chat`
       );
-      // Получение всех документов в подколлекции
       const snapshot = await getDocs(chatCollectionRef);
-      // Удаление каждого документа в подколлекции
       snapshot.docs.forEach(async (doc) => {
         await deleteDoc(doc.ref);
       });
-      // Удаление подколлекции messages
 
-      await deleteField(doc(firestore, "connection", connectionCollectionId), "chat");
+      await deleteField(
+        doc(firestore, "connection", connectionCollectionId),
+        "chat"
+      );
 
       await deleteDoc(doc(firestore, "connection", connectionCollectionId));
 
-////////////////////////////////////////////////////////////
-
-      // Получение ссылки на подколлекцию messages
       const workoutCollectionRef = collection(
         firestore,
         `connection/${connectionCollectionId}/workout`
       );
 
-      // Получение всех документов в подколлекции
       const snapshot2 = await getDocs(workoutCollectionRef);
-      // Удаление каждого документа в подколлекции
       snapshot2.docs.forEach(async (doc) => {
         await deleteDoc(doc.ref);
       });
-      // Удаление подколлекции messages
 
-      await deleteField(doc(firestore, "connection", connectionCollectionId), "workout");
+      await deleteField(
+        doc(firestore, "connection", connectionCollectionId),
+        "workout"
+      );
 
       await deleteDoc(doc(firestore, "connection", connectionCollectionId));
 
-//////////////////////////////////////////////////////////////
       await updateDoc(coachRef, {
         clients: arrayRemove(user.id),
         connection: arrayRemove(connectionCollectionId),
@@ -152,7 +136,6 @@ const ClientsStack = ({ route }) => {
         connection: null,
       });
       setDone(true);
-      //navigation.navigate("ClientsTab");
     } catch (err) {
       console.log("error for sign up with coach: ", err.message);
     }
@@ -178,43 +161,52 @@ const ClientsStack = ({ route }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-    <View style={styles.container}>
-      <View style={{ alignItems: "center" }}>
-        {!image ? (
-          <Image style={styles.image} source={Muscle} />
-        ) : (
-          <>
-            {image && <Image style={styles.image} source={{ uri: image }} />}
-          </>
-        )}
-        <Text style={styles.title}>{user.firstname + " " + user.lastname}</Text>
-        <Text style={styles.subtitle}>{user.email}</Text>
+      <View style={styles.container}>
+        <View style={{ alignItems: "center" }}>
+          {!image ? (
+            <Image style={styles.image} source={Muscle} />
+          ) : (
+            <>
+              {image && <Image style={styles.image} source={{ uri: image }} />}
+            </>
+          )}
+          <Text style={styles.title}>
+            {user.firstname + " " + user.lastname}
+          </Text>
+          <Text style={styles.subtitle}>{user.email}</Text>
 
-        <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("CalorieDay", { user, coachId })}
-            style={styles.chatBtn}
-          >
-            {/* <Text style={styles.chatText}>История калорий</Text> */}
-            <MaterialCommunityIcons name="food-drumstick" size={35} color="white" />
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("CalorieDay", { user, coachId })
+              }
+              style={styles.chatBtn}
+            >
+              <MaterialCommunityIcons
+                name="food-drumstick"
+                size={35}
+                color="white"
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity  onPress={() => navigation.navigate("Chat",{
-            ClientId: user.connection,
-          })}  style={styles.chatBtn}>
-            {/* <Text style={styles.chatText}>Написать сообщение</Text> */}
-            <MaterialCommunityIcons name="message-bulleted" size={35} color="white" />
-          </TouchableOpacity>
-
-          {/* <TouchableOpacity  onPress={() => navigation.navigate("Workouts",{
-            user
-          })}  style={styles.chatBtn}> */}
-            {/* <Text style={styles.chatText}>Создать план тренировок</Text> */}
-            {/* <MaterialCommunityIcons name="arm-flex" size={35} color="white" />
-          </TouchableOpacity> */}
-
-        </View>
-        <Text style={[styles.subtitle,{marginEnd:200}]}>План тренировок:</Text>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("Chat", {
+                  ClientId: user.connection,
+                })
+              }
+              style={styles.chatBtn}
+            >
+              <MaterialCommunityIcons
+                name="message-bulleted"
+                size={35}
+                color="white"
+              />
+            </TouchableOpacity>
+          </View>
+          <Text style={[styles.subtitle, { marginEnd: 200 }]}>
+            План тренировок:
+          </Text>
           <View style={styles.inputViewDescription}>
             <TextInput
               style={[styles.TextInput, { height: "auto" }]}
@@ -226,148 +218,153 @@ const ClientsStack = ({ route }) => {
             />
           </View>
 
-        <TouchableOpacity onPress={handleSubmitPlan} style={[styles.loginBtn,{marginTop:10}]}>
-          <Text style={styles.loginText}> Отправить план </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleSubmitPlan}
+            style={[styles.loginBtn, { marginTop: 10 }]}
+          >
+            <Text style={styles.loginText}> Отправить план </Text>
+          </TouchableOpacity>
 
-        <View style={{ flexDirection: "row", marginVertical: 6 }}>
-          <View style={{ alignItems: "center", flex: 1 }}>
-            <MaterialCommunityIcons
-              name={user.gender === "Male" ? "gender-male" : "gender-female"}
-              size={50}
-              color="#32b3be"
-            />
-            <Text style={{ textAlign: "center" }}>
-              {user.gender === "Male" ? "Мужчина" : "Женщина"}
+          <View style={{ flexDirection: "row", marginVertical: 6 }}>
+            <View style={{ alignItems: "center", flex: 1 }}>
+              <MaterialCommunityIcons
+                name={user.gender === "Male" ? "gender-male" : "gender-female"}
+                size={50}
+                color="#32b3be"
+              />
+              <Text style={{ textAlign: "center" }}>
+                {user.gender === "Male" ? "Мужчина" : "Женщина"}
+              </Text>
+            </View>
+
+            <View style={{ alignItems: "center", flex: 1 }}>
+              <MaterialCommunityIcons
+                name="human-male-height"
+                size={50}
+                color="#32b3be"
+              />
+              <Text style={{ textAlign: "center" }}> {user.height} см</Text>
+            </View>
+
+            <View style={{ alignItems: "center", flex: 1 }}>
+              <FontAwesome5 name="weight" size={50} color="#32b3be" />
+              <Text style={{ textAlign: "center" }}>{user.weight} кг</Text>
+            </View>
+          </View>
+          <View style={{ marginEnd: 60, marginVertical: 10 }}>
+            <Text style={styles.subtitle}>Активность: {user.activity}</Text>
+            <Text style={styles.subtitle}>Цель: {user.goal}</Text>
+            <Text style={styles.subtitle}>
+              Возраст: {user.age} {ageText}
             </Text>
           </View>
 
-          <View style={{ alignItems: "center", flex: 1 }}>
-            <MaterialCommunityIcons name="human-male-height" size={50} color="#32b3be" />
-            <Text style={{ textAlign: "center" }}> {user.height} см</Text>
-          </View>
-
-          <View style={{ alignItems: "center", flex: 1 }}>
-            <FontAwesome5 name="weight" size={50} color="#32b3be" />
-            <Text style={{ textAlign: "center" }}>{user.weight} кг</Text>
-          </View>
-        </View>
-        <View style={{ marginEnd: 60, marginVertical: 10 }}>
-          <Text style={styles.subtitle}>Активность: {user.activity}</Text>
-          <Text style={styles.subtitle}>Цель: {user.goal}</Text>
-          <Text style={styles.subtitle}>
-            Возраст: {user.age} {ageText}
-          </Text>
+          <TouchableOpacity onPress={confirmDelete} style={styles.loginBtn}>
+            <Text style={styles.loginText}>Удалить клиента</Text>
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={confirmDelete} style={styles.loginBtn}>
-          <Text style={styles.loginText}>Удалить клиента</Text>
-        </TouchableOpacity>
+        <AwesomeAlert
+          show={clientDelete}
+          title="Удаление клиента"
+          titleStyle={{
+            fontSize: 22,
+            color: "red",
+          }}
+          message="Вы точно хотите удалить клиента?"
+          messageStyle={{
+            fontSize: 16,
+          }}
+          showConfirmButton={true}
+          confirmText="Удалить"
+          confirmButtonColor="red"
+          confirmButtonStyle={{
+            width: "40%",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 25,
+          }}
+          confirmButtonTextStyle={{
+            fontSize: 16,
+          }}
+          onConfirmPressed={() => {
+            Delete();
+            setClientDelete(false);
+          }}
+          showCancelButton={true}
+          cancelText="Отмена"
+          cancelButtonColor="#32b3be"
+          cancelButtonStyle={{
+            width: "40%",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 25,
+          }}
+          cancelButtonTextStyle={{
+            fontSize: 16,
+          }}
+          onCancelPressed={() => {
+            setClientDelete(false);
+          }}
+        />
+
+        <AwesomeAlert
+          show={done}
+          title="Готово"
+          titleStyle={{
+            fontSize: 22,
+            color: "#32b3be",
+          }}
+          message="Клиент успешно удалён"
+          messageStyle={{
+            fontSize: 16,
+          }}
+          showConfirmButton={true}
+          confirmText="OK"
+          confirmButtonColor="#32b3be"
+          confirmButtonStyle={{
+            width: "50%",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 25,
+          }}
+          confirmButtonTextStyle={{
+            fontSize: 16,
+          }}
+          onConfirmPressed={() => {
+            setDone(false);
+            navigation.navigate("ClientsTab");
+          }}
+        />
+
+        <AwesomeAlert
+          show={planAlert}
+          title="Готово"
+          titleStyle={{
+            fontSize: 22,
+            color: "#32b3be",
+          }}
+          message="План успешно отправлен"
+          messageStyle={{
+            fontSize: 16,
+          }}
+          showConfirmButton={true}
+          confirmText="OK"
+          confirmButtonColor="#32b3be"
+          confirmButtonStyle={{
+            width: "50%",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 25,
+          }}
+          confirmButtonTextStyle={{
+            fontSize: 16,
+          }}
+          onConfirmPressed={() => {
+            setPlanAlert(false);
+          }}
+        />
       </View>
-
-      <AwesomeAlert
-        show={clientDelete}
-        title="Удаление клиента"
-        titleStyle={{
-          fontSize: 22,
-          color:'red'
-        }}
-        message="Вы точно хотите удалить клиента?"
-        messageStyle={{
-          fontSize: 16
-        }}
-        showConfirmButton={true}
-        confirmText="Удалить"
-        confirmButtonColor="#32b3be"
-        confirmButtonStyle={{
-          width:'40%',
-          alignItems:'center',
-          justifyContent:'center',
-          borderRadius: 25,
-        }}
-        confirmButtonTextStyle={{
-          fontSize: 16,
-        }}
-        onConfirmPressed={()=>{
-          Delete()
-          setClientDelete(false)
-        }}
-
-        showCancelButton={true}
-        cancelText="Отмена"
-        cancelButtonColor="red"
-        cancelButtonStyle={{
-          width:'40%',
-          alignItems:'center',
-          justifyContent:'center',
-          borderRadius: 25,
-        }}
-        cancelButtonTextStyle={{
-          fontSize: 16,
-        }}
-        onCancelPressed={()=>{
-          setClientDelete(false)
-        }}
-      />
-
-      <AwesomeAlert
-        show={done}
-        title="Готово"
-        titleStyle={{
-          fontSize: 22,
-          color:'#32b3be'
-        }}
-        message="Клиент успешно удалён"
-        messageStyle={{
-          fontSize: 16
-        }}
-        showConfirmButton={true}
-        confirmText="OK"
-        confirmButtonColor="#32b3be"
-        confirmButtonStyle={{
-          width:'50%',
-          alignItems:'center',
-          justifyContent:'center',
-          borderRadius: 25,
-        }}
-        confirmButtonTextStyle={{
-          fontSize: 16,
-        }}
-        onConfirmPressed={()=>{
-          setDone(false)
-          navigation.navigate("ClientsTab");
-        }}
-      />
-
-      <AwesomeAlert
-        show={planAlert}
-        title="Готово"
-        titleStyle={{
-          fontSize: 22,
-          color:'#32b3be'
-        }}
-        message="План успешно отправлен"
-        messageStyle={{
-          fontSize: 16
-        }}
-        showConfirmButton={true}
-        confirmText="OK"
-        confirmButtonColor="#32b3be"
-        confirmButtonStyle={{
-          width:'50%',
-          alignItems:'center',
-          justifyContent:'center',
-          borderRadius: 25,
-        }}
-        confirmButtonTextStyle={{
-          fontSize: 16,
-        }}
-        onConfirmPressed={()=>{
-          setPlanAlert(false)
-        }}
-      />
-
-    </View>
     </ScrollView>
   );
 };
@@ -457,7 +454,7 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     flexGrow: 1,
   },
-  planBtn:{
+  planBtn: {
     width: 50,
     borderRadius: 25,
     height: 50,
@@ -467,7 +464,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#32b3be",
     borderColor: "#b1fff1",
     borderWidth: 1,
-  }
+  },
 });
 
 export default ClientsStack;

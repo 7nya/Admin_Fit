@@ -1,54 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  SafeAreaView, 
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
   ActivityIndicator,
   Keyboard,
-  TouchableWithoutFeedback
-} from 'react-native';
+  TouchableWithoutFeedback,
+} from "react-native";
 
-import { GiftedChat, Avatar } from 'react-native-gifted-chat';
-import { getDoc, doc, updateDoc, onSnapshot, addDoc, collection, query, orderBy } from "firebase/firestore";
+import { GiftedChat } from "react-native-gifted-chat";
+import {
+  onSnapshot,
+  addDoc,
+  collection,
+  query,
+  orderBy,
+} from "firebase/firestore";
 import { firestore } from "../firebase";
 import useAuth from "../AuthHook/useAuth";
-import { useNavigation } from "@react-navigation/core";
-import { Bubble } from 'react-native-gifted-chat';
 
-export default Chat = ({route}) => {
+export default Chat = ({ route }) => {
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [avatar, setAvatar] = useState(null);
-  const {ClientId} = route.params
+  const { ClientId } = route.params;
 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (user) {
-      setAvatar(user.avatar)
-      const connectionId = user.connection;
-      const messagesCollectionRef = collection(firestore, `connection/${ClientId}/chat`);
-      const messagesQuery = query(messagesCollectionRef, orderBy('createdAt', 'asc'));
-  
+      setAvatar(user.avatar);
+      const messagesCollectionRef = collection(
+        firestore,
+        `connection/${ClientId}/chat`
+      );
+      const messagesQuery = query(
+        messagesCollectionRef,
+        orderBy("createdAt", "asc")
+      );
+
       const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
         const newMessages = snapshot.docs.map((doc) => ({
           ...doc.data(),
           _id: doc.id,
         }));
 
-        
         setMessages(newMessages);
         setLoading(false);
       });
-  
+
       return () => unsubscribe();
     }
-    
   }, [user]);
 
   const onSend = async (newMessages = []) => {
-   
-    const connectionId = user.connection;
-    const messagesCollectionRef = collection(firestore, `connection/${ClientId}/chat`);
+    const messagesCollectionRef = collection(
+      firestore,
+      `connection/${ClientId}/chat`
+    );
 
     const formattedMessages = newMessages.map((message) => ({
       ...message,
@@ -57,11 +65,13 @@ export default Chat = ({route}) => {
 
     try {
       await Promise.all(
-        formattedMessages.map((message) => addDoc(messagesCollectionRef, message))
+        formattedMessages.map((message) =>
+          addDoc(messagesCollectionRef, message)
+        )
       );
-      console.log('Сообщения успешно отправлены!');
+      console.log("Сообщения успешно отправлены!");
     } catch (error) {
-      console.error('Ошибка при отправке сообщений:', error);
+      console.error("Ошибка при отправке сообщений:", error);
     }
   };
 
@@ -71,10 +81,13 @@ export default Chat = ({route}) => {
 
   if (!user || loading) {
     return (
-      <ActivityIndicator size="large" color="#58754B" style={styles.loadingScreen} />
+      <ActivityIndicator
+        size="large"
+        color="#58754B"
+        style={styles.loadingScreen}
+      />
     );
   }
-  
 
   return (
     <SafeAreaView style={styles.root}>
@@ -94,28 +107,19 @@ export default Chat = ({route}) => {
       </TouchableWithoutFeedback>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#E5E5E5',
+    backgroundColor: "#E5E5E5",
   },
   container: {
     flex: 1,
-    backgroundColor: '#ffe9bd'
+    backgroundColor: "#ffe9bd",
   },
   loadingScreen: {
     flex: 1,
-    backgroundColor: '#ffe9bd',
-  },
-  avatarContainer: {
-    marginLeft: 8, // Регулируйте отступы по своему усмотрению
-    marginRight: 8,
-  },
-  avatarImage: {
-    width: 40, // Увеличьте этот размер для увеличения аватарки
-    height: 40, // Увеличьте этот размер для увеличения аватарки
-    borderRadius: 20, // Увеличьте этот радиус для увеличения аватарки
+    backgroundColor: "#ffe9bd",
   },
 });

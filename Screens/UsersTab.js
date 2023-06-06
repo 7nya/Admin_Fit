@@ -1,4 +1,11 @@
-import { View, Text, FlatList, Pressable, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Image,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { firebase } from "../firebase";
 import { useNavigation } from "@react-navigation/core";
@@ -39,23 +46,27 @@ const UsersTab = () => {
               pressed || pressedIndex === index ? "#32b3be" : "#b1fff1",
           },
         ]}
-        onPress={ () => navigation.navigate("UsersStack", { 
-          user:item, 
-          userId: item.id, 
-        }) }
+        onPress={() =>
+          navigation.navigate("UsersStack", {
+            user: item,
+            userId: item.id,
+          })
+        }
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
-        <View style={{flexDirection: 'row', alignItems:'center'}}>
-          <View style={{marginRight: 16}}>
-            <Image 
-              style={styles.image} 
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={{ marginRight: 16 }}>
+            <Image
+              style={styles.image}
               source={item.avatar ? { uri: item.avatar } : Muscle}
             />
           </View>
-           
-          <View style={{flexShrink: 1}}>
-            <Text style={styles.title}>{[item.firstname," ",item.lastname]}</Text>
+
+          <View style={{ flexShrink: 1 }}>
+            <Text style={styles.title}>
+              {[item.firstname, " ", item.lastname]}
+            </Text>
             <Text style={styles.subtitle}>{item.email}</Text>
           </View>
         </View>
@@ -86,7 +97,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
     borderRadius: 25,
-    borderColor:"#32b3be",
+    borderColor: "#32b3be",
   },
   title: {
     fontSize: 28,
@@ -100,7 +111,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 100,
     borderWidth: 3,
-    borderColor:'#32b3be'
+    borderColor: "#32b3be",
   },
 });
 

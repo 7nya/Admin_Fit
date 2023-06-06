@@ -1,11 +1,10 @@
 import { View, Text, StyleSheet, Pressable, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { onSnapshot } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/core";
-import { format } from "date-fns"; //npm install date-fns
+import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 
 export default function Calorie({ route }) {
@@ -16,20 +15,16 @@ export default function Calorie({ route }) {
   const [pressedIndex, setPressedIndex] = useState(null);
 
   useEffect(() => {
-    const foodCollectionRef = collection(
-      firestore,
-      "users",
-      user.id, //ссылка на food
-      "food"
-    );
+    const foodCollectionRef = collection(firestore, "users", user.id, "food");
     const unsubscribe = onSnapshot(foodCollectionRef, (snapshot) => {
       const updatedDocuments = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      const sortedDocuments = updatedDocuments.sort((a, b) => b.date.localeCompare(a.date));
+      const sortedDocuments = updatedDocuments.sort((a, b) =>
+        b.date.localeCompare(a.date)
+      );
       setDocuments(sortedDocuments);
-
     });
 
     return () => {
@@ -51,11 +46,9 @@ export default function Calorie({ route }) {
           navigation.navigate("Calorie", { user, coachId, date: item.date })
         }
       >
-        
-      <Text style={styles.dateText}>
-        {format(new Date(item.date), "EEEE, d MMMM", { locale: ru })}
-      </Text>
-
+        <Text style={styles.dateText}>
+          {format(new Date(item.date), "EEEE, d MMMM", { locale: ru })}
+        </Text>
       </Pressable>
     );
   };

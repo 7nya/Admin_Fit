@@ -23,7 +23,6 @@ import { collection } from "firebase/firestore";
 const UsersStack = ({ route }) => {
   const { userId } = route.params;
   const { user } = route.params;
-  //const db = firebase.firestore();
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
 
@@ -72,42 +71,6 @@ const UsersStack = ({ route }) => {
   useEffect(() => {
     setImage(user.avatar);
   }, []);
-
-  /*   useEffect(() => {
-    const loadData = async () => {
-      try {
-        // Восстановление значения description из хранилища
-        const savedDescription = await AsyncStorage.getItem(storageKey);
-        if (savedDescription !== null) {
-          setDescription(savedDescription);
-        }
-      } catch (error) {
-        console.error("Ошибка при загрузке данных из хранилища:", error);
-      }
-    };
-
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        // Сохранение значения description в хранилище
-        await AsyncStorage.setItem(
-            storageKey,
-            description,
-            name,
-            excersises,
-            workoutImage,
-            sets,
-             );
-      } catch (error) {
-        console.error("Ошибка при сохранении данных в хранилище:", error);
-      }
-    };
-
-    saveData();
-  }, [description]); */
 
   const handleSubmitPlan = async () => {
     if (user) {
@@ -158,16 +121,18 @@ const UsersStack = ({ route }) => {
           <Text style={styles.subtitle}>{user.email}</Text>
 
           {/* <View style={{ flexDirection: "row", marginVertical: 6 }}></View> */}
-          <Text style={[styles.subtitle,{marginTop:10}]}>Название программы: </Text>
+          <Text style={[styles.subtitle, { marginTop: 10 }]}>
+            Название программы:{" "}
+          </Text>
           <View style={styles.inputViewDescription}>
-          <TextInput
-                  style={[styles.TextInput, { height: 40 }]}
-                  placeholder="Напишите здесь название программы"
-                  placeholderTextColor="#003f5c"
-                  value={description}
-                  //    multiline={true}
-                />
-</View>
+            <TextInput
+              style={[styles.TextInput, { height: 40 }]}
+              placeholder="Напишите здесь название программы"
+              placeholderTextColor="#003f5c"
+              value={description}
+              //    multiline={true}
+            />
+          </View>
           <TouchableOpacity style={styles.loginBtn} onPress={openModal}>
             <Text style={styles.loginText}>Создать программу</Text>
           </TouchableOpacity>
@@ -178,20 +143,7 @@ const UsersStack = ({ route }) => {
             onRequestClose={closeModal}
           >
             <View style={styles.container}>
-              {/* <Text>Название программы</Text> */}
-              
-
-              {/* <View style={styles.inputViewDescription}>
-                <TextInput
-                  style={[styles.TextInput, { height: 40 }]}
-                  placeholder="Опишите здесь план тренировок клиенту"
-                  placeholderTextColor="#003f5c"
-                  value={name}
-                  onChangeText={(value) => setName(value)}
-                  //   multiline={true}
-                />
-              </View> */}
-              <Text style={{marginTop:100}}>Упражнение</Text>
+              <Text style={{ marginTop: 100 }}>Упражнение</Text>
               <View style={styles.inputViewDescription}>
                 <TextInput
                   style={[styles.TextInput, { height: 40 }]}
@@ -199,7 +151,6 @@ const UsersStack = ({ route }) => {
                   placeholderTextColor="#003f5c"
                   value={description}
                   onChangeText={(value) => setDescription(value)}
-                  //    multiline={true}
                 />
               </View>
               <Text>Кол-во повторений</Text>
@@ -224,29 +175,20 @@ const UsersStack = ({ route }) => {
                   //     multiline={true}
                 />
               </View>
-              <TouchableOpacity onPress={handleSubmitPlan} style={[styles.chatBtn,{marginTop:10}]}>
-          <Text style={styles.loginText}> Отправить тренировку </Text>
-        </TouchableOpacity>
-              <TouchableOpacity style={[styles.chatBtn,{marginHorizontal:150}]} onPress={closeModal}>
+              <TouchableOpacity
+                onPress={handleSubmitPlan}
+                style={[styles.chatBtn, { marginTop: 10 }]}
+              >
+                <Text style={styles.loginText}> Отправить тренировку </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.chatBtn, { marginHorizontal: 150 }]}
+                onPress={closeModal}
+              >
                 <Text style={styles.loginText}>Закрыть</Text>
               </TouchableOpacity>
             </View>
           </Modal>
-          {/* <Text style={[styles.subtitle,{marginEnd:200}]}>План тренировок:</Text>
-          <View style={styles.inputViewDescription}>
-            <TextInput
-              style={[styles.TextInput, { height: "auto" }]}
-              placeholder="Опишите здесь план тренировок клиенту"
-              placeholderTextColor="#003f5c"
-              value={description}
-              onChangeText={(value) => setDescription(value)}
-              multiline={true}
-            />
-          </View>
-
-        <TouchableOpacity onPress={handleSubmitPlan} style={[styles.loginBtn,{marginTop:10}]}>
-          <Text style={styles.loginText}> Отправить план </Text>
-        </TouchableOpacity> */}
         </View>
       </View>
     </ScrollView>
@@ -305,7 +247,7 @@ const styles = StyleSheet.create({
   loginText: {
     color: "white",
     fontSize: 20,
-    marginHorizontal: 10
+    marginHorizontal: 10,
   },
   chatBtn: {
     width: "40%",
